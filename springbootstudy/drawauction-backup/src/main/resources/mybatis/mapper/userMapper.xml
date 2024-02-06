@@ -1,0 +1,392 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.gdu.drawauction.dao.UserMapper">
+	
+	<!--accociation-->
+	<!-- BidDto에 대한 resultMap -->
+  <resultMap type="BidDto"        id="BidMap">
+    <id column="BID_NO"           property="bidNo"/>
+    <result column="PRICE"        property="price" />
+    <result column="BID_AT"       property="bidAt" />
+    <result column="POSTCODE"     property="postcode" />
+    <result column="ROAD_ADDRESS" property="roadAddress" />
+    <result column="JIBUN_ADDRESS" property="jibunAddress" />
+    <result column="DETAIL_ADDRESS" property="detailAddress" />
+    
+    <association javaType="AuctionDto"  property="auctionDto">
+      <id column="AUCTION_NO"       property="auctionNo"/>
+      <result column="START_PRICE"  property="startPrice"/>
+      <result column="BUY_PRICE"    property="buyPrice"/>
+      <result column="START_AT"     property="startAt"/>
+      <result column="END_AT"       property="endAt"/>
+      <result column="STATUS"       property="status"/>
+      
+      <association javaType="ArtDto"      property="artDto">
+        <id column="ART_NO"         property="artNo"/>
+        <result column="TITLE"      property="title"/>
+        <result column="CONTENTS"   property="contents"/>
+        <result column="ART_TYPE"   property="artType"/>
+        <result column="WIDTH"      property="width"/>
+        <result column="HEIGHT"     property="height"/>
+        
+        <association javaType="UserDto"    property="sellerDto">
+          <id column="USER_NO"              property="sellerNo"/>
+          <result column="EMAIL"            property="email"/>
+          <result column="PW"               property="pw"/>
+          <result column="NAME"             property="name"/>
+          <result column="MOBILE"           property="mobile"/>
+          <result column="GENDER"           property="gender"/>
+          <result column="AGREE"            property="agree"/>
+          <result column="STATE"            property="state"/>
+          <result column="JOINED_AT"        property="joinedAt"/>
+          <result column="POSTCODE"         property="postcode"/>
+          <result column="ROAD_ADDRESS"     property="roadAddress"/>
+          <result column="JIBUN_ADDRESS"    property="jibunAddress"/>
+          <result column="DETAIL_ADDRESS"   property="detailAddress"/>
+          <result column="NICKNAME"         property="nickname"/>
+          <result column="INTRODUCTION"     property="introduction"/>
+        </association>
+        
+        <association javaType="CategoryDto" property="categoryDto">
+          <id        column="CATEGORY_NO"     property="categoryNo"/>
+          <result    column="CATEGORY_NAME"   property="categoryName" />
+        </association>
+        
+      </association>
+    </association>
+    
+    <association javaType="UserDto"    property="bidderDto">
+      <id column="USER_NO"              property="bidderNo"/>
+      <result column="EMAIL"            property="email"/>
+      <result column="PW"               property="pw"/>
+      <result column="NAME"             property="name"/>
+      <result column="MOBILE"           property="mobile"/>
+      <result column="GENDER"           property="gender"/>
+      <result column="AGREE"            property="agree"/>
+      <result column="STATE"            property="state"/>
+      <result column="JOINED_AT"        property="joinedAt"/>
+      <result column="POSTCODE"         property="postcode"/>
+      <result column="ROAD_ADDRESS"     property="roadAddress"/>
+      <result column="JIBUN_ADDRESS"    property="jibunAddress"/>
+      <result column="DETAIL_ADDRESS"   property="detailAddress"/>
+      <result column="NICKNAME"         property="nickname"/>
+      <result column="INTRODUCTION"     property="introduction"/>
+      <result column="MY_PRICE"         property="myPrice" />
+    </association>
+    
+  </resultMap>
+	
+	
+	<select id="getUser" parameterType="Map" resultType="UserDto">
+		SELECT USER_NO, EMAIL, PW, NAME, MOBILE, GENDER, AGREE, STATE, JOINED_AT, POSTCODE, ROAD_ADDRESS, JIBUN_ADDRESS, DETAIL_ADDRESS, NICKNAME, INTRODUCTION
+		  FROM USER_T
+		<where>
+	      <if test="email != null">EMAIL = #{email}</if>
+	      <if test="pw != null">AND PW = #{pw}</if>
+	      <if test="userNo != null">AND USER_NO = #{userNo}</if>
+	    </where>
+	</select>
+
+	
+	<!--/* 접속기록 넣기 */-->
+  <insert id="insertAccess" parameterType="String">
+    INSERT INTO ACCESS_T (
+    	EMAIL, LOGIN_AT
+    ) VALUES (
+		#{email}, SYSDATE
+    )
+  </insert>
+	
+	<select id="getLeaveUser" parameterType="Map" resultType="LeaveUserDto">
+    SELECT EMAIL, JOINED_AT, LEAVED_AT
+      FROM LEAVE_USER_T
+     WHERE EMAIL = #{email}
+  </select>
+
+  <select id="getInactiveUser" parameterType="Map" resultType="InactiveUserDto">
+    SELECT USER_NO, EMAIL, PW, NAME, MOBILE, GENDER, AGREE, STATE, JOINED_AT, POSTCODE, ROAD_ADDRESS, JIBUN_ADDRESS, DETAIL_ADDRESS, NICKNAME, INTRODUCTION, INACTIVED_AT
+      FROM INACTIVE_USER_T
+    <where>
+      <if test="email != null">EMAIL = #{email}</if>
+      <if test="pw != null">AND PW = #{pw}</if>
+    </where>
+  </select>
+  
+  <!--/* 사용자 추가하기 */-->
+  <insert id="insertUser" parameterType="UserDto">
+    INSERT INTO USER_T (
+			USER_NO
+		  , EMAIL
+		  , PW
+		  , NAME
+		  , MOBILE
+		  , GENDER
+		  , AGREE
+		  , STATE
+		  , JOINED_AT
+		  , POSTCODE
+		  , ROAD_ADDRESS
+		  , JIBUN_ADDRESS
+		  , DETAIL_ADDRESS
+		  , NICKNAME
+    ) VALUES (
+	        USER_SEQ.NEXTVAL
+	      , #{email}
+	      , #{pw}
+	      , #{name}
+	      , #{mobile}
+	      , #{gender}
+	      , #{agree}
+	      , 0
+	      , SYSDATE
+	      , #{postcode}
+	      , #{roadAddress}
+	      , #{jibunAddress}
+	      , #{detailAddress}
+	      , #{nickname}
+    )
+  </insert>
+
+
+	<!--/* 사용자 정보 수정하기 */-->
+	<update id="updateUser" parameterType="UserDto">
+		UPDATE USER_T
+		   SET EMAIL = #{email}
+             , NAME = #{name}
+             , MOBILE = #{mobile}
+		   	 , GENDER = #{gender}
+		   	 , POSTCODE = #{postcode}
+		   	 , AGREE = 0
+		   	 , ROAD_ADDRESS = #{roadAddress}
+		   	 , JIBUN_ADDRESS = #{jibunAddress}
+		   	 , DETAIL_ADDRESS = #{detailAddress}
+		   	 , NICKNAME = #{nickname}
+		   	 , INTRODUCTION = #{introduction}
+		 WHERE USER_NO = #{userNo}
+	</update>
+
+
+	<!--/* 탈퇴한 사용자 INSERT */-->
+	  <insert id="insertLeaveUser" parameterType="UserDto">
+	    INSERT INTO LEAVE_USER_T (
+	        EMAIL
+	      , JOINED_AT
+	      , LEAVED_AT
+	    ) VALUES (
+	        #{email}
+	      , #{joinedAt}
+	      , SYSDATE
+	    )
+	  </insert>
+
+  
+  <!--/* 유저 삭제하기 */-->
+  <delete id="deleteUser" parameterType="UserDto">
+    DELETE
+      FROM USER_T
+     WHERE USER_NO = #{userNo}
+  </delete>
+  
+   <!--/* 휴면 유저 insert  */-->
+  <insert id="insertInactiveUser">
+    INSERT INTO INACTIVE_USER_T (
+		SELECT U.USER_NO, U.EMAIL, U.PW, U.NAME, U.MOBILE, U.GENDER, U.AGREE, U.STATE, U.JOINED_AT, POSTCODE, ROAD_ADDRESS, JIBUN_ADDRESS, DETAIL_ADDRESS, NICKNAME, INTRODUCTION, INACTIVED_AT, A.LOGIN_AT 
+		  FROM USER_T U LEFT OUTER JOIN ACCESS_T A
+		    ON U.EMAIL = A.EMAIL
+		 WHERE MONTHS_BETWEEN(SYSDATE, LOGIN_AT) >= 6
+		    OR (LOGIN_AT IS NULL AND MONTHS_BETWEEN(SYSDATE, LOGIN_AT) >= 6))
+  </insert>
+  
+  <delete id="deleteUserForInactive">
+        DELETE
+      FROM USER_T
+     WHERE EMAIL IN(SELECT U.EMAIL
+                      FROM USER_T U LEFT OUTER JOIN ACCESS_T A
+                        ON U.EMAIL = A.EMAIL
+                     WHERE MONTHS_BETWEEN(SYSDATE, LOGIN_AT) >= 6
+                        OR (LOGIN_AT IS NULL AND MONTHS_BETWEEN(SYSDATE, JOINED_AT) >= 6))
+  </delete>
+
+  <insert id="insertActiveUser" parameterType="String">  
+    INSERT INTO USER_T (
+      SELECT USER_NO, EMAIL, PW, NAME, MOBILE, GENDER, AGREE, STATE, JOINED_AT, POSTCODE, ROAD_ADDRESS, JIBUN_ADDRESS, DETAIL_ADDRESS, NICKNAME, INTRODUCTION, INACTIVED_AT
+        FROM INACTIVE_USER_T
+       WHERE EMAIL = #{email})
+  </insert>
+
+  <delete id="deleteInactiveUser" parameterType="String">
+    DELETE
+      FROM INACTIVE_USER_T
+     WHERE EMAIL = #{email}
+  </delete>
+
+<!--/* 소셜로그인 */-->
+
+<!--/* 네이버 로그인 mapper*/-->
+	 <insert id="insertNaverUser" parameterType="UserDto">
+    INSERT INTO USER_T (
+			USER_NO
+		  , EMAIL
+		  , NAME
+		  , MOBILE
+		  , GENDER
+		  , AGREE
+		  , STATE
+		  , JOINED_AT
+		  , POSTCODE
+		  , ROAD_ADDRESS
+		  , JIBUN_ADDRESS
+		  , DETAIL_ADDRESS
+		  , NICKNAME
+    ) VALUES (
+    	USER_SEQ.NEXTVAL
+    	, #{email}
+    	, #{name}
+    	, #{mobile}
+    	, #{gender}
+    	, #{agree}
+    	, 1
+    	, SYSDATE
+    	, #{postcode}
+    	, #{roadAddress}
+    	, #{jibunAddress}
+    	, #{detailAddress}
+    	, #{nickname}
+    )
+  </insert>
+  
+<!--/* 카카오 로그인 mapper*/-->
+  	<insert id="insertKakaoUser" parameterType="UserDto">
+    INSERT INTO USER_T (
+			USER_NO
+		  , EMAIL
+		  , NAME
+		  , MOBILE
+		  , GENDER
+		  , AGREE
+		  , STATE
+		  , JOINED_AT
+		  , POSTCODE
+		  , ROAD_ADDRESS
+		  , JIBUN_ADDRESS
+		  , DETAIL_ADDRESS
+		  , NICKNAME
+    ) VALUES (
+    	USER_SEQ.NEXTVAL
+    	, #{email}
+    	, #{name}
+    	, #{mobile}
+    	, #{gender}
+    	, #{agree}
+    	, 2
+    	, SYSDATE
+    	, #{postcode}
+    	, #{roadAddress}
+    	, #{jibunAddress}
+    	, #{detailAddress}
+    	, #{nickname}
+    )
+	</insert>
+  
+
+
+	<!--/* 아이디/비밀번호 찾기 */-->
+	<!--/* 아이디 찾기 */-->
+
+<select id="findId" resultType="UserDto">
+    SELECT USER_NO, EMAIL, PW, NAME, MOBILE, GENDER, AGREE, STATE, JOINED_AT, POSTCODE, ROAD_ADDRESS, JIBUN_ADDRESS, DETAIL_ADDRESS, NICKNAME, INTRODUCTION
+    FROM USER_T
+    WHERE NAME = #{name}
+</select>
+
+
+<select id="findPw" resultType="int">
+    SELECT COUNT(*)
+    FROM USER_T
+   WHERE EMAIL = #{email}
+     AND NAME = #{name}
+     AND MOBILE = #{mobile}
+</select>
+
+  <update id="updatePw" parameterType="Map">
+    UPDATE USER_T
+       SET PW = #{pw}
+     WHERE EMAIL = #{email}
+       AND NAME = #{name}
+  </update>
+  
+  
+  <!--/* 이름 중복 체크 */-->
+  	<select id="nameCheck" resultType="int">
+		SELECT COUNT(*) FROM USER_T
+		   WHERE NAME = #{name}
+	</select>
+
+  <!--/* 닉네임 중복 체크 */-->
+  	<select id="nicknameCheck" resultType="int">
+		SELECT COUNT(*) FROM USER_T
+		   WHERE NICKNAME = #{nickname}
+	</select>
+	
+
+	<!-- 사용자 닉네임 및 한줄평 조회 -->
+    <select id="getUserInfo" resultType="UserDto">
+        SELECT NICKNAME, INTRODUCTION
+        FROM USER_T
+        WHERE USER_NO = #{userNo}
+    </select>
+
+    <!-- 사용자가 업로드한 경매 전체보기 -->
+    <select id="getUserAuctions" resultType="AuctionDto">
+        SELECT U.USER_NO, A.SELLER_NO, C.CATEGORY_NAME, TITLE
+        FROM USER_T U
+            LEFT OUTER JOIN ART_T A ON U.USER_NO = A.SELLER_NO
+            INNER JOIN AUCTION_T T ON A.ART_NO = T.ART_NO
+            INNER JOIN CATEGORY_T C ON C.CATEGORY_NO = A.CATEGORY_NO
+        WHERE U.USER_NO = #{userNo}
+    </select>
+
+    <!-- 사용자가 업로드한 그려드림 전체보기 -->
+    <select id="getUserDrawings" resultType="DrawDto">
+        SELECT U.USER_NO, D.SELLER_NO, C.CATEGORY_NAME, TITLE, PRICE
+        FROM USER_T U
+            LEFT OUTER JOIN DRAW_T D ON U.USER_NO = D.SELLER_NO
+            INNER JOIN CATEGORY_T C ON C.CATEGORY_NO = D.CATEGORY_NO
+        WHERE U.USER_NO = #{userNo}
+    </select>
+
+  <insert id="insertEmoney" parameterType="int">
+    INSERT INTO EMONEY_T (
+        EMONEY_NO
+      , USER_NO
+      , EMONEY_HISTORY
+      , EMONEY_DATE    
+    ) VALUES (
+        EMONEY_SEQ.NEXTVAL
+      , #{userNo}
+      , #{amount}
+      , SYSDATE
+    )
+  </insert>
+
+  <insert id="insertDefaultEmoney">
+    INSERT INTO EMONEY_T (
+        EMONEY_NO
+      , USER_NO
+      , EMONEY_HISTORY
+      , EMONEY_DATE
+    ) VALUES (
+        EMONEY_SEQ.NEXTVAL
+      , USER_SEQ.CURRVAL
+      , 0
+      , SYSDATE
+    )
+    
+  </insert>
+
+
+	
+</mapper>

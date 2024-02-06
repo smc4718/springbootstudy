@@ -1,0 +1,689 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.gdu.drawauction.dao.MypageMapper">
+  
+  <!-- BidDto에 대한 resultMap -->
+  <resultMap type="BidDto"        id="BidMap">
+    <id column="BID_NO"           property="bidNo"/>
+    <result column="PRICE"        property="price" />
+    <result column="BID_AT"       property="bidAt" />
+    <result column="POSTCODE"     property="postcode" />
+    <result column="ROAD_ADDRESS" property="roadAddress" />
+    <result column="JIBUN_ADDRESS" property="jibunAddress" />
+    <result column="DETAIL_ADDRESS" property="detailAddress" />
+    
+    <association javaType="AuctionDto"  property="auctionDto">
+      <id column="AUCTION_NO"       property="auctionNo"/>
+      <result column="START_PRICE"  property="startPrice"/>
+      <result column="BUY_PRICE"    property="buyPrice"/>
+      <result column="START_AT"     property="startAt"/>
+      <result column="END_AT"       property="endAt"/>
+      <result column="STATUS"       property="status"/>
+      
+      <association javaType="ArtDto"      property="artDto">
+        <id column="ART_NO"         property="artNo"/>
+        <result column="TITLE"      property="title"/>
+        <result column="CONTENTS"   property="contents"/>
+        <result column="ART_TYPE"   property="artType"/>
+        <result column="WIDTH"      property="width"/>
+        <result column="HEIGHT"     property="height"/>
+        
+        <association javaType="UserDto"    property="sellerDto">
+          <id column="USER_NO"              property="sellerNo"/>
+          <result column="EMAIL"            property="email"/>
+          <result column="PW"               property="pw"/>
+          <result column="NAME"             property="name"/>
+          <result column="MOBILE"           property="mobile"/>
+          <result column="GENDER"           property="gender"/>
+          <result column="AGREE"            property="agree"/>
+          <result column="STATE"            property="state"/>
+          <result column="JOINED_AT"        property="joinedAt"/>
+          <result column="POSTCODE"         property="postcode"/>
+          <result column="ROAD_ADDRESS"     property="roadAddress"/>
+          <result column="JIBUN_ADDRESS"    property="jibunAddress"/>
+          <result column="DETAIL_ADDRESS"   property="detailAddress"/>
+          <result column="NICKNAME"         property="nickname"/>
+          <result column="INTRODUCTION"     property="introduction"/>
+        </association>
+        
+        <association javaType="CategoryDto" property="categoryDto">
+          <id        column="CATEGORY_NO"     property="categoryNo"/>
+          <result    column="CATEGORY_NAME"   property="categoryName" />
+        </association>
+        
+      </association>
+    </association>
+    
+    <association javaType="UserDto"    property="bidderDto">
+      <id column="USER_NO"              property="bidderNo"/>
+      <result column="EMAIL"            property="email"/>
+      <result column="PW"               property="pw"/>
+      <result column="NAME"             property="name"/>
+      <result column="MOBILE"           property="mobile"/>
+      <result column="GENDER"           property="gender"/>
+      <result column="AGREE"            property="agree"/>
+      <result column="STATE"            property="state"/>
+      <result column="JOINED_AT"        property="joinedAt"/>
+      <result column="POSTCODE"         property="postcode"/>
+      <result column="ROAD_ADDRESS"     property="roadAddress"/>
+      <result column="JIBUN_ADDRESS"    property="jibunAddress"/>
+      <result column="DETAIL_ADDRESS"   property="detailAddress"/>
+      <result column="NICKNAME"         property="nickname"/>
+      <result column="INTRODUCTION"     property="introduction"/>
+      <result column="MY_PRICE"         property="myPrice" />
+    </association>
+  
+  </resultMap>
+  
+  <!-- DrawDto에 대한 resultMap -->
+  <resultMap type="DrawDto"      id="DrawMap">
+    <id      column="DRAW_NO"    property="drawNo"/>
+    <result  column="TITLE"        property="title"/>
+    <result  column="PRICE"        property="price"/>
+    <result  column="CONTENTS"     property="contents"/>
+    <result  column="WIDTH"  property="width"/>
+    <result  column="HEIGHT" property="height"/>
+    <result  column="WORK_TERM" property="workTerm"/>
+    <association javaType="CategoryDto" property="categoryDto">
+      <id        column="CATEGORY_NO"   property="categoryNo"/>
+      <result    column="CATEGORY_NAME"          property="categoryName" />
+    </association>
+    <association javaType="UserDto"      property="userDto">
+      <id        column="USER_NO"        property="userNo"/>
+      <result    column="EMAIL"          property="email" />
+      <result    column="PW"             property="pw" />
+      <result    column="NAME"           property="name" />
+      <result    column="MOBILE"         property="mobile" />
+      <result    column="GENDER"         property="gender" />
+      <result    column="AGREE"          property="agree" />
+      <result    column="STATE"          property="state" />
+      <result    column="JOINED_AT"      property="joinedAt" />
+      <result    column="POSTCODE"       property="postcode" />
+      <result    column="ROAD_ADDRESS"   property="roadAddress" />
+      <result    column="JIBUN_ADDRESS"  property="jibunAddress" />
+      <result    column="DETAIL_ADDRESS" property="detailAddress" />
+      <result    column="NICKNAME" property="nickname" />
+      <result    column="INTRODUCTION" property="introduction" />
+    </association>
+  </resultMap>
+  
+  <!-- EmoneyDto에 대한 resultMap -->
+  <resultMap    type="EmoneyDto"        id="EmoneyMap">
+    <id         column="EMONEY_NO"      property="emoneyNo" />
+    <result     column="EMONEY_HISTORY" property="emoneyHistory" />
+    <result     column="EMONEY_DATE"    property="emoneyDate" />
+    <association javaType="UserDto"      property="userDto">
+      <id        column="USER_NO"        property="userNo"/>
+      <result    column="EMAIL"          property="email" />
+      <result    column="PW"             property="pw" />
+      <result    column="NAME"           property="name" />
+      <result    column="MOBILE"         property="mobile" />
+      <result    column="GENDER"         property="gender" />
+      <result    column="AGREE"          property="agree" />
+      <result    column="STATE"          property="state" />
+      <result    column="JOINED_AT"      property="joinedAt" />
+      <result    column="POSTCODE"       property="postcode" />
+      <result    column="ROAD_ADDRESS"   property="roadAddress" />
+      <result    column="JIBUN_ADDRESS"  property="jibunAddress" />
+      <result    column="DETAIL_ADDRESS" property="detailAddress" />
+      <result    column="NICKNAME"       property="nickname" />
+      <result    column="INTRODUCTION"   property="introduction" />
+    </association>
+  </resultMap>
+  
+
+    <!-- DrawOrderDto2에 대한 resultMap -->
+  <resultMap type="DrawOrderDto2" id="DrawOrderMap2">
+    <id   column="ORDER_NO" property="orderNo"/>
+    <result column="ORDER_DATE" property="orderDate"/>
+    <result column="PRICE" property="price"/>
+    <result column="RECEIVE_EMAIL" property="receiveEmail"/>
+    <result column="DRAW_REQUEST" property="drawRequest" />
+    <result column="BUYER_NO" property="buyerNo" />
+    <result column="BUYER_NICKNAME" property="buyerNickname" />
+    <result column="BUYER_EMAIL"    property="buyerEmail" />
+    <result column="BUYER_MOBILE"     property="buyerMobile" />
+    <association javaType="DrawDto2"    property="drawDto2">
+      <id      column="DRAW_NO"      property="drawNo"/>
+      <result  column="TITLE"        property="title"/>
+      <result  column="PRICE"        property="price"/>
+      <result  column="CONTENTS"     property="contents"/>
+      <result  column="WIDTH"      property="width"/>
+      <result  column="HEIGHT"     property="height"/>
+      <result  column="WORK_TERM"    property="workTerm"/>
+      <result  column="SELLER_NO"    property="sellerNo" />
+      <result column="SELLER_NICKNAME" property="sellerNickname" />
+      <result column="SELLER_EMAIL"   property="sellerEmail" />
+      <result column="SELLER_MOBILE"  property="sellerMobile" />
+      <association javaType="CategoryDto" property="categoryDto">
+        <id        column="CATEGORY_NO"   property="categoryNo"/>
+        <result    column="CATEGORY_NAME"          property="categoryName" />
+      </association>
+    </association>
+  </resultMap>
+
+  <!-- AuctionDto에 대한 resultMap -->
+  <resultMap type="AuctionDto" id="AuctionMap">
+    <id column="AUCTION_NO"       property="auctionNo"/>
+    <result column="START_PRICE"  property="startPrice"/>
+    <result column="BUY_PRICE"    property="buyPrice"/>
+    <result column="START_AT"     property="startAt"/>
+    <result column="END_AT"       property="endAt"/>
+    <result column="STATUS"       property="status"/>
+    <result column="PRICE"        property="price"/>
+    <association javaType="ArtDto"      property="artDto">
+      <id column="ART_NO"         property="artNo"/>
+      <result column="TITLE"      property="title"/>
+      <result column="CONTENTS"   property="contents"/>
+      <result column="ART_TYPE"   property="artType"/>
+      <result column="WIDTH"      property="width"/>
+      <result column="HEIGHT"     property="height"/>
+      <association javaType="UserDto"    property="sellerDto">
+        <id column="USER_NO"              property="userNo"/>
+        <result column="EMAIL"            property="email"/>
+        <result column="PW"               property="pw"/>
+        <result column="NAME"             property="name"/>
+        <result column="MOBILE"           property="mobile"/>
+        <result column="GENDER"           property="gender"/>
+        <result column="AGREE"            property="agree"/>
+        <result column="STATE"            property="state"/>
+        <result column="JOINED_AT"        property="joinedAt"/>
+        <result column="POSTCODE"         property="postcode"/>
+        <result column="ROAD_ADDRESS"     property="roadAddress"/>
+        <result column="JIBUN_ADDRESS"    property="jibunAddress"/>
+        <result column="DETAIL_ADDRESS"   property="detailAddress"/>
+        <result column="NICKNAME"         property="nickname"/>
+        <result column="INTRODUCTION"     property="introduction"/>
+      </association>
+      <association javaType="CategoryDto" property="categoryDto">
+        <id        column="CATEGORY_NO"     property="categoryNo"/>
+        <result    column="CATEGORY_NAME"   property="categoryName" />
+      </association>
+    </association>
+  </resultMap>
+  
+  <resultMap type="AuctionWishlistDto" id="AuctionWishlistMap">
+    <id column="AUCTION_WISH_NO"       property="auctionWishNo"/>
+    <result column="WISHED_AT"         property="wishedAt"/>
+    <association resultMap="AuctionMap" property="auctionDto"/>
+    <association javaType="UserDto" property="userDto"/>
+  </resultMap>
+  
+  <!--/*
+  <resultMap type="UserDto2"    id="userDto">
+    <id column="USER_NO"              property="userNo"/>
+    <result column="EMAIL"            property="email"/>
+    <result column="PW"               property="pw"/>
+    <result column="NAME"             property="name"/>
+    <result column="MOBILE"           property="mobile"/>
+    <result column="GENDER"           property="gender"/>
+    <result column="AGREE"            property="agree"/>
+    <result column="STATE"            property="state"/>
+    <result column="JOINED_AT"        property="joinedAt"/>
+    <result column="POSTCODE"         property="postcode"/>
+    <result column="ROAD_ADDRESS"     property="roadAddress"/>
+    <result column="JIBUN_ADDRESS"    property="jibunAddress"/>
+    <result column="DETAIL_ADDRESS"   property="detailAddress"/>
+    <result column="NICKNAME"         property="nickname"/>
+    <result column="INTRODUCTION"     property="introduction"/>
+    <result column="MY_PRICE"         property="myPrice" />
+    <result column="USER_IMAGE_DTO"   property="userImageDto" />
+  </resultMap>
+  */-->
+  
+  <update id="updateUser" parameterType="UserDto">
+    UPDATE USER_T
+       SET NAME = #{name}
+         , NICKNAME = #{nickname}
+         , GENDER = #{gender}
+         , MOBILE = #{mobile}
+         , POSTCODE = #{postcode}
+         , ROAD_ADDRESS = #{roadAddress}
+         , JIBUN_ADDRESS = #{jibunAddress}
+         , DETAIL_ADDRESS = #{detailAddress}
+         , AGREE = #{agree}
+     WHERE USER_NO = #{userNo}
+  </update>
+  
+  <update id="updateUserIntroduction" parameterType="UserDto">
+    UPDATE USER_T
+       SET INTRODUCTION = #{introduction}
+     WHERE USER_NO = #{userNo}
+  </update>
+  
+  <update id="updateUserPw" parameterType="UserDto">
+    UPDATE USER_T
+       SET PW = #{pw}
+     WHERE USER_NO = #{userNo}
+  </update>
+  
+  
+
+  <select id="getUser" parameterType="Map" resultType="UserDto">
+  SELECT USER_NO, EMAIL, PW, NAME, MOBILE, GENDER, AGREE, STATE, JOINED_AT, POSTCODE, ROAD_ADDRESS, JIBUN_ADDRESS, DETAIL_ADDRESS, NICKNAME, INTRODUCTION
+    FROM USER_T
+  <where>
+      <if test="email != null">EMAIL = #{email}</if>
+      <if test="pw != null">AND PW = #{pw}</if>
+      <if test="userNo != null">AND USER_NO = #{userNo}</if>
+    </where>
+  </select>
+
+  <insert id="insertLeaveUser" parameterType="UserDto">
+    INSERT INTO LEAVE_USER_T (
+        EMAIL
+      , JOINED_AT
+      , LEAVED_AT
+    ) VALUES (
+        #{email}
+      , #{joinedAt}
+      , SYSDATE
+    )
+  </insert>
+
+
+  <delete id="deleteUser" parameterType="UserDto">
+    DELETE
+      FROM USER_T
+     WHERE USER_NO = #{userNo}
+  </delete>
+
+  
+  <!--/*
+  <insert id="insertUserBasicImage" parameterType="String">
+    INSERT INTO USER_IMAGE_T (
+      USER_IMAGE_NO
+    , EMAIL
+    , PATH
+    , FILESYSTEM_NAME
+    , IMAGE_ORIGINAL_NAME
+    , HAS_THUMBNAIL
+  ) VALUES (
+      USER_IMAGE_SEQ.NEXTVAL
+    , #{email}
+    , '/mybatis/static/image/'
+    , 'basic_profile.png'
+    , 'basic_profile.png'
+    , 0
+  )
+  </insert>
+  
+  <insert id="insertUserImage" parameterType="UserImageDto">
+    INSERT INTO USER_IMAGE_T (
+      USER_IMAGE_NO
+    , EMAIL
+    , PATH
+    , FILESYSTEM_NAME
+    , IMAGE_ORIGINAL_NAME
+    , HAS_THUMBNAIL
+  ) VALUES (
+      USER_IMAGE_SEQ.NEXTVAL
+    , #{email}
+    , #{path}
+    , #{filesystemName}
+    , #{imageOriginalName}
+    , #{hasThumbnail}
+  )
+  </insert>
+  
+  <select id="getUser" parameterType="Map" resultType="UserDto2">
+    SELECT USER_NO, EMAIL, PW, NAME, MOBILE, GENDER, AGREE, STATE, JOINED_AT, POSTCODE, ROAD_ADDRESS, JIBUN_ADDRESS, DETAIL_ADDRESS, NICKNAME, INTRODUCTION
+      FROM USER_T
+    <where>
+        <if test="email != null">EMAIL = #{email}</if>
+        <if test="pw != null">AND PW = #{pw}</if>
+      </where>
+  </select>
+  
+  <select id="getUserImage" parameterType="String" resultType="UserImageDto">
+    SELECT USER_IMAGE_NO, EMAIL, PATH, FILESYSTEM_NAME, IMAGE_ORIGINAL_NAME, HAS_THUMBNAIL
+      FROM USER_IMAGE_T
+     WHERE EMAIL = #{email}
+  </select>
+  */-->
+  
+  
+  <!-- 출품 중 경매 수 -->
+  <select id="getArtForSaleCount" parameterType="int" resultType="int">
+    SELECT COUNT(*)
+      FROM (SELECT ART.ART_NO, ART.SELLER_NO, ART.CATEGORY_NO, ART.TITLE, ART.CONTENTS, ART.ART_TYPE, ART.WIDTH, ART.HEIGHT, 
+                   AUC.AUCTION_NO, AUC.START_PRICE, AUC.BUY_PRICE, AUC.START_AT, AUC.END_AT, AUC.STATUS
+              FROM ART_T ART INNER JOIN AUCTION_T AUC
+                ON ART.ART_NO = AUC.ART_NO
+             WHERE AUC.STATUS = 0 AND ART.SELLER_NO = #{sellerNo})
+  </select>
+  
+  <!-- 입찰 중 경매 수 -->
+  <select id="getBiddingCount" parameterType="int" resultType="int">
+    SELECT COUNT(DISTINCT ART_NO)
+      FROM (SELECT ART.ART_NO, ART.SELLER_NO, ART.CATEGORY_NO, ART.TITLE, ART.CONTENTS, ART.ART_TYPE, ART.WIDTH, ART.HEIGHT,
+                   AUC.AUCTION_NO, AUC.START_PRICE, AUC.BUY_PRICE, AUC.START_AT, AUC.END_AT, AUC.STATUS,
+                   BID.BID_NO, BID.BIDDER_NO, BID.PRICE, BID.BID_AT, BID.POSTCODE, BID.ROAD_ADDRESS, BID.JIBUN_ADDRESS, BID.DETAIL_ADDRESS
+              FROM ART_T ART INNER JOIN AUCTION_T AUC
+                ON ART.ART_NO = AUC.ART_NO RIGHT OUTER JOIN BID_T BID
+                ON AUC.AUCTION_NO = BID.AUCTION_NO
+             WHERE AUC.STATUS = 0 AND BID.BIDDER_NO = #{bidderNo})
+  </select>
+  
+  <!-- 경매 입찰 내역 -->
+  <select id="getAuctionBidCount" parameterType="int" resultType="int">
+  SELECT COUNT(*) FROM (SELECT ART.ART_NO, ART.SELLER_NO, ART.TITLE, ART.CONTENTS, 
+                                AUC.AUCTION_NO, AUC.END_AT, AUC.STATUS,
+                                B.BID_NO, B.BIDDER_NO, B.PRICE AS MY_PRICE, B.BID_AT,
+                                ROW_NUMBER() OVER (PARTITION BY ART.ART_NO ORDER BY B.PRICE DESC) AS RN
+                           FROM ART_T ART INNER JOIN AUCTION_T AUC
+                             ON ART.ART_NO = AUC.AUCTION_NO INNER JOIN BID_T B
+                             ON AUC.AUCTION_NO = B.AUCTION_NO
+                           WHERE B.BIDDER_NO = #{bidderNo})
+          WHERE RN = 1
+  </select> 
+  
+  <select id="getAuctionBidList" parameterType="Map" resultMap="BidMap">
+    SELECT Q1.ART_NO, Q1.TITLE, Q1.CONTENTS, Q1.BID_AT, Q1.MY_PRICE, Q2.PRICE, Q1.STATUS, Q1.END_AT, Q1.AUCTION_NO
+    FROM (SELECT ART_NO, SELLER_NO, TITLE, CONTENTS, AUCTION_NO, END_AT, STATUS, BID_NO, BIDDER_NO, MY_PRICE, BID_AT, RN1, ROW_NUMBER() OVER(ORDER BY BID_AT ASC) AS RN
+            FROM (SELECT ART.ART_NO, ART.SELLER_NO, ART.TITLE, ART.CONTENTS, 
+                         AUC.AUCTION_NO, AUC.END_AT, AUC.STATUS,
+                         B.BID_NO, B.BIDDER_NO, B.PRICE AS MY_PRICE, B.BID_AT,
+                         ROW_NUMBER() OVER (PARTITION BY ART.ART_NO ORDER BY B.PRICE DESC) AS RN1
+                    FROM ART_T ART INNER JOIN AUCTION_T AUC
+                      ON ART.ART_NO = AUC.AUCTION_NO INNER JOIN BID_T B
+                      ON AUC.AUCTION_NO = B.AUCTION_NO
+                   WHERE B.BIDDER_NO = #{bidderNo})
+          WHERE RN1 = 1) Q1 LEFT OUTER JOIN (SELECT ART_NO, PRICE
+                                               FROM (SELECT ART.ART_NO, ART.SELLER_NO, ART.TITLE, ART.CONTENTS, 
+                                                            AUC.AUCTION_NO, AUC.END_AT, AUC.STATUS,
+                                                            B.BID_NO, B.BIDDER_NO, B.PRICE, B.BID_AT,
+                                                            ROW_NUMBER() OVER (PARTITION BY ART.ART_NO ORDER BY B.PRICE DESC) AS RN2
+                                                       FROM ART_T ART INNER JOIN AUCTION_T AUC
+                                                         ON ART.ART_NO = AUC.AUCTION_NO INNER JOIN BID_T B
+                                                         ON AUC.AUCTION_NO = B.AUCTION_NO)
+                                              WHERE RN2 = 1) Q2
+                                                 ON Q1.ART_NO = Q2.ART_NO
+    WHERE RN BETWEEN #{begin} AND #{end}
+
+  </select>
+  
+  <!-- 경매 이미지 -->
+  <select id="getMyAuctionImage" parameterType="int" resultType="AuctionImageDto">
+    SELECT AUCTION_IMAGE_NO, AUCTION_NO, PATH, FILESYSTEM_NAME, IMAGE_ORIGINAL_NAME, HAS_THUMBNAIL
+      FROM AUCTION_IMAGE_T
+     WHERE AUCTION_NO = #{auctionNo}
+       AND AUCTION_IMAGE_NO = (SELECT MIN(AUCTION_IMAGE_NO)
+                                 FROM AUCTION_IMAGE_T WHERE AUCTION_NO = #{auctionNo})
+  </select>
+  
+  <!-- 경매 출품 내역 -->
+  <select id="getAuctionSalesCount" parameterType="int" resultType="int">
+    SELECT COUNT(*) FROM (SELECT ART.ART_NO, ART.SELLER_NO, ART.CATEGORY_NO, ART.TITLE, ART.CONTENTS, ART.ART_TYPE, ART.WIDTH, ART.HEIGHT, 
+                                 AUC.AUCTION_NO, AUC.START_PRICE, AUC.BUY_PRICE, AUC.START_AT, AUC.END_AT, AUC.STATUS
+                            FROM ART_T ART INNER JOIN AUCTION_T AUC
+                              ON ART.ART_NO = AUC.ART_NO
+                           WHERE ART.SELLER_NO = #{sellerNo})
+  </select> 
+  
+  <select id="getAuctionSalesList" parameterType="Map" resultMap="BidMap">
+  SELECT AUCTION_NO, TITLE, CONTENTS, START_AT, START_PRICE, PRICE, STATUS, END_AT
+    FROM (SELECT A.AUCTION_NO, A.TITLE, A.CONTENTS, A.START_AT, A.START_PRICE, A.END_AT, A.STATUS, A.SELLER_NO, A.ART_NO,
+                 MAX(B.PRICE) AS PRICE, ROW_NUMBER() OVER(ORDER BY A.START_AT DESC) AS RN
+            FROM (SELECT AUC.AUCTION_NO, AUC.START_PRICE, AUC.START_AT, AUC.END_AT, AUC.STATUS, ART.TITLE, ART.CONTENTS, ART.SELLER_NO, ART.ART_NO
+                    FROM AUCTION_T AUC INNER JOIN ART_T ART
+                      ON AUC.ART_NO = ART.ART_NO) A LEFT OUTER JOIN BID_T B
+                      ON A.AUCTION_NO = B.AUCTION_NO
+                   WHERE SELLER_NO = #{sellerNo}
+                   GROUP BY A.AUCTION_NO, A.TITLE, A.CONTENTS, A.START_AT, A.START_PRICE, A.END_AT, A.STATUS, A.SELLER_NO, A.ART_NO)
+   WHERE RN BETWEEN #{begin} AND #{end}
+  </select>
+  
+  <!-- 내가 올린 그려드림 -->
+  <select id="getMyDrawCount" parameterType="int" resultType="int">
+    SELECT COUNT(*)
+      FROM (SELECT A.DRAW_NO, A.CATEGORY_NO, A.TITLE, A.PRICE, A.CONTENTS, A.WIDTH, A.HEIGHT, A.WORK_TERM, A.SELLER_NO, C.CATEGORY_NAME
+              FROM (SELECT D.DRAW_NO, D.CATEGORY_NO, D.TITLE, D.PRICE, D.CONTENTS, D.WIDTH, D.HEIGHT, D.WORK_TERM, D.SELLER_NO
+                      FROM DRAW_T D LEFT OUTER JOIN USER_T USR
+                        ON D.SELLER_NO = USR.USER_NO) A INNER JOIN CATEGORY_T C
+              ON A.CATEGORY_NO = C.CATEGORY_NO
+             WHERE A.SELLER_NO = #{sellerNo})
+  </select>  
+ 
+  <select id="getMyDrawList" parameterType="Map" resultMap="DrawMap">
+    SELECT A.DRAW_NO, A.CATEGORY_NO, A.TITLE, A.PRICE, A.CONTENTS, A.WIDTH, A.HEIGHT, A.WORK_TERM, A.USER_NO, A.NICKNAME, A.NAME, A.EMAIL, C.CATEGORY_NAME
+      FROM (SELECT ROW_NUMBER() OVER(ORDER BY DRAW_NO DESC) AS RN,
+                   D.DRAW_NO, D.CATEGORY_NO, D.TITLE, D.PRICE, D.CONTENTS, D.WIDTH, D.HEIGHT, D.WORK_TERM,USR.USER_NO, USR.NICKNAME, USR.NAME, USR.EMAIL
+              FROM DRAW_T D LEFT OUTER JOIN USER_T USR
+                ON D.SELLER_NO = USR.USER_NO
+             WHERE USR.USER_NO = #{sellerNo}) A INNER JOIN CATEGORY_T C
+        ON A.CATEGORY_NO = C.CATEGORY_NO
+     WHERE A.RN BETWEEN #{begin} AND #{end}
+     ORDER BY A.DRAW_NO DESC
+  </select>
+  
+  <!-- 그려드림 이미지 -->
+  <select id="getDrawImage" parameterType="int" resultType="DrawImageDto">
+    SELECT DRAW_IMAGE_NO, DRAW_NO, PATH, FILESYSTEM_NAME, IMAGE_ORIGINAL_NAME, HAS_THUMBNAIL
+      FROM DRAW_IMAGE_T
+     WHERE DRAW_NO = #{drawNo}
+       AND DRAW_IMAGE_NO = (SELECT MIN(DRAW_IMAGE_NO) FROM DRAW_IMAGE_T WHERE DRAW_NO = #{drawNo})
+  </select>
+ 
+  <!-- 그려드림 주문한 내역 -->
+  <select id="getDrawOrderCount" parameterType="int" resultType="int">
+    SELECT COUNT(*)
+      FROM DRAW_ORDER_T
+     WHERE BUYER_NO = #{buyerNo}
+  </select>
+
+  <select id="getDrawOrderList" parameterType="Map" resultMap="DrawOrderMap2">
+     SELECT A.DRAW_NO, A.TITLE, A.PRICE, A.CONTENTS, A.WIDTH, A.HEIGHT, A.WORK_TERM,
+           A.ORDER_NO, A.ORDER_DATE, A.RECEIVE_EMAIL, A.DRAW_REQUEST,
+           A.BUYER_NO, A.SELLER_NO, A.SELLER_NICKNAME, A.SELLER_MOBILE, A.SELLER_EMAIL,
+           A.CATEGORY_NO, A.CATEGORY_NAME
+      FROM (SELECT D.DRAW_NO, D.TITLE, D.PRICE, D.CONTENTS, D.WIDTH, D.HEIGHT, D.WORK_TERM,
+                   DOR.ORDER_NO, DOR.ORDER_DATE, DOR.RECEIVE_EMAIL, DOR.DRAW_REQUEST,
+                   U1.USER_NO AS SELLER_NO, U2.USER_NO AS BUYER_NO,
+                   U1.NICKNAME AS SELLER_NICKNAME, U1.MOBILE AS SELLER_MOBILE, U1.EMAIL AS SELLER_EMAIL,
+                   C.CATEGORY_NO, C.CATEGORY_NAME,
+                   ROW_NUMBER() OVER(ORDER BY DOR.ORDER_DATE DESC) AS RN
+              FROM DRAW_T D RIGHT OUTER JOIN DRAW_ORDER_T DOR
+                ON D.DRAW_NO = DOR.DRAW_NO INNER JOIN USER_T U1
+                ON D.SELLER_NO = U1.USER_NO LEFT OUTER JOIN USER_T U2
+                ON DOR.BUYER_NO = U2.USER_NO INNER JOIN CATEGORY_T C
+                ON D.CATEGORY_NO = C.CATEGORY_NO
+             WHERE DOR.BUYER_NO = #{buyerNo}) A
+     WHERE A.RN BETWEEN #{begin} AND #{end}
+  </select>
+  
+  <!-- 그려드림 받은 주문내역 -->
+  <select id="getDrawReceivedOrderCount" parameterType="int" resultType="int">
+    SELECT COUNT(*)
+      FROM DRAW_ORDER_T DO LEFT OUTER JOIN DRAW_T D
+        ON D.DRAW_NO = DO.DRAW_NO
+     WHERE SELLER_NO = #{sellerNo}
+  </select>
+   
+  <select id="getDrawReceivedOrderList" parameterType="Map" resultMap="DrawOrderMap2">
+    SELECT A.DRAW_NO, A.SELLER_NO, A.TITLE, A.PRICE, A.CONTENTS, A.WIDTH, A.HEIGHT, A.WORK_TERM, A.SELLER_NICKNAME,
+           A.ORDER_NO, A.ORDER_DATE, A.RECEIVE_EMAIL, A.DRAW_REQUEST,
+           A.BUYER_NO, A.BUYER_NICKNAME, A.BUYER_MOBILE, A.BUYER_EMAIL,
+           A.CATEGORY_NO, A.CATEGORY_NAME
+      FROM (SELECT D.DRAW_NO, D.SELLER_NO, D.TITLE, D.PRICE, D.CONTENTS, D.WIDTH, D.HEIGHT, D.WORK_TERM, U1.NICKNAME AS SELLER_NICKNAME,
+                   DOR.ORDER_NO, DOR.ORDER_DATE, DOR.RECEIVE_EMAIL, DOR.DRAW_REQUEST,
+                   DOR.BUYER_NO, U2.EMAIL AS BUYER_EMAIL, U2.NICKNAME AS BUYER_NICKNAME, U2.MOBILE AS BUYER_MOBILE, 
+                   C.CATEGORY_NO, C.CATEGORY_NAME,
+                   ROW_NUMBER() OVER(ORDER BY DOR.ORDER_DATE DESC) AS RN
+              FROM DRAW_T D RIGHT OUTER JOIN DRAW_ORDER_T DOR
+                ON D.DRAW_NO = DOR.DRAW_NO INNER JOIN USER_T U1
+                ON D.SELLER_NO = U1.USER_NO LEFT OUTER JOIN USER_T U2
+                ON DOR.BUYER_NO = U2.USER_NO INNER JOIN CATEGORY_T C
+                ON D.CATEGORY_NO = C.CATEGORY_NO
+             WHERE D.SELLER_NO = #{sellerNo}) A
+     WHERE A.RN BETWEEN #{begin} AND #{end}
+  </select>
+  
+  <!-- E-MONEY -->
+  <select id="getEmoneyCount" parameterType="int" resultType="int">
+    SELECT COUNT(*)
+    FROM (SELECT E.EMONEY_NO, E.USER_NO, E.EMONEY_HISTORY, E.EMONEY_DATE
+            FROM EMONEY_T E RIGHT OUTER JOIN USER_T U
+              ON E.USER_NO = U.USER_NO
+           WHERE U.USER_NO = #{userNo})
+  </select> 
+    
+  <select id="getEmoneyBalance" parameterType="Map" resultType="int">
+    SELECT SUM(A.EMONEY_HISTORY)
+      FROM (SELECT E.EMONEY_HISTORY, ROW_NUMBER() OVER (ORDER BY E.EMONEY_NO DESC) AS RN
+              FROM EMONEY_T E RIGHT OUTER JOIN USER_T U
+                ON E.USER_NO = U.USER_NO
+             WHERE U.USER_NO = #{userNo}) A
+     WHERE RN BETWEEN #{no} AND (SELECT COUNT(*) FROM EMONEY_T
+                                  WHERE USER_NO = #{userNo})
+  </select>  
+    
+  <select id="getEmoneyList" parameterType="Map" resultMap="EmoneyMap">
+    SELECT EMONEY_NO, USER_NO, EMONEY_HISTORY, EMONEY_DATE
+      FROM (SELECT E.EMONEY_NO, E.USER_NO, E.EMONEY_HISTORY, E.EMONEY_DATE, ROW_NUMBER() OVER (ORDER BY E.EMONEY_NO DESC) AS RN
+              FROM EMONEY_T E RIGHT OUTER JOIN USER_T U
+                ON E.USER_NO = U.USER_NO
+             WHERE U.USER_NO = #{userNo})
+     WHERE RN BETWEEN #{begin} AND #{end}
+  </select>
+  
+  
+  <!-- 경매 찜 -->
+  <insert id="insertAuctionWish" parameterType="Map">
+    INSERT INTO AUCTION_WISHLIST_T (
+          AUCTION_WISH_NO,
+          AUCTION_NO,
+          USER_NO,
+          WISHED_AT
+        ) VALUES (
+          AUCTION_WISHLIST_SEQ.NEXTVAL,
+          #{auctionNo},
+          #{userNo},
+          SYSDATE
+    )
+  </insert>
+  
+  <delete id="deleteAuctionWish" parameterType="Map">
+    DELETE AUCTION_WISHLIST_T
+     WHERE AUCTION_NO = #{auctionNo}
+       AND USER_NO = #{userNo}
+  </delete>
+  
+  <select id="hasAuctionWish" resultType="int"  parameterType="Map">
+    SELECT COUNT(*)
+      FROM AUCTION_WISHLIST_T
+     WHERE AUCTION_NO = #{auctionNo}
+       AND USER_NO = #{userNo}
+  </select>
+  
+  <select id="getAuctionWishCount" parameterType="int">
+    SELECT COUNT(ART_NO)
+      FROM (SELECT ART.ART_NO, ART.SELLER_NO, ART.CATEGORY_NO, ART.TITLE, ART.CONTENTS,
+                   AUC.AUCTION_NO, AUC.START_PRICE, AUC.BUY_PRICE, AUC.START_AT, AUC.END_AT, AUC.STATUS,
+                   MAX(B.PRICE) AS PRICE,
+                   W.AUCTION_WISH_NO, W.USER_NO, W.WISHED_AT,
+                   ROW_NUMBER() OVER(ORDER BY WISHED_AT DESC) AS RN
+              FROM ART_T ART INNER JOIN AUCTION_T AUC
+                ON ART.ART_NO = AUC.ART_NO LEFT OUTER JOIN BID_T B
+                ON AUC.AUCTION_NO = B.AUCTION_NO INNER JOIN AUCTION_WISHLIST_T W
+                ON AUC.AUCTION_NO = W.AUCTION_NO
+             WHERE USER_NO = 3
+             GROUP BY ART.ART_NO, ART.SELLER_NO, ART.CATEGORY_NO, ART.TITLE, ART.CONTENTS, 
+                   AUC.AUCTION_NO, AUC.START_PRICE, AUC.BUY_PRICE, AUC.START_AT, AUC.END_AT, AUC.STATUS,
+                   W.AUCTION_WISH_NO, W.USER_NO, W.WISHED_AT)
+  </select>
+  
+  <select id="getAuctionWishList" parameterType="Map" resultMap="AuctionMap">
+    SELECT ART_NO, SELLER_NO, NICKNAME, CATEGORY_NO, CATEGORY_NAME, TITLE, CONTENTS, 
+           AUCTION_NO, START_PRICE, BUY_PRICE, START_AT, END_AT, STATUS,
+           PRICE,
+           AUCTION_WISH_NO, USER_NO, WISHED_AT
+      FROM (SELECT ART.ART_NO, ART.SELLER_NO, ART.TITLE, ART.CONTENTS,
+                   U.NICKNAME,
+                   C.CATEGORY_NO, C.CATEGORY_NAME,
+                   AUC.AUCTION_NO, AUC.START_PRICE, AUC.BUY_PRICE, AUC.START_AT, AUC.END_AT, AUC.STATUS,
+                   MAX(B.PRICE) AS PRICE,
+                   W.AUCTION_WISH_NO, W.USER_NO, W.WISHED_AT,
+                   ROW_NUMBER() OVER(ORDER BY WISHED_AT DESC) AS RN
+              FROM ART_T ART INNER JOIN AUCTION_T AUC
+                ON ART.ART_NO = AUC.ART_NO LEFT OUTER JOIN BID_T B
+                ON AUC.AUCTION_NO = B.AUCTION_NO INNER JOIN AUCTION_WISHLIST_T W
+                ON AUC.AUCTION_NO = W.AUCTION_NO INNER JOIN CATEGORY_T C
+                ON ART.CATEGORY_NO = C.CATEGORY_NO LEFT OUTER JOIN USER_T U
+                ON U.USER_NO = ART.SELLER_NO
+             WHERE W.USER_NO = #{userNo}
+             GROUP BY ART.ART_NO, ART.SELLER_NO, ART.CATEGORY_NO, ART.TITLE, ART.CONTENTS,
+                      U.NICKNAME,
+                      C.CATEGORY_NO, C.CATEGORY_NAME,
+                     AUC.AUCTION_NO, AUC.START_PRICE, AUC.BUY_PRICE, AUC.START_AT, AUC.END_AT, AUC.STATUS,
+                     W.AUCTION_WISH_NO, W.USER_NO, W.WISHED_AT) A
+     WHERE RN BETWEEN #{begin} AND #{end}
+  </select>
+  
+  
+  <!-- 그려드림 찜 -->
+  <insert id="insertDrawWish" parameterType="Map">
+    INSERT INTO DRAW_WISHLIST_T (
+      DRAW_WISH_NO
+    , DRAW_NO
+      , USER_NO
+    , WISHED_AT
+      ) VALUES (
+      DRAW_WISHLIST_SEQ.NEXTVAL
+    , #{drawNo}
+    , #{userNo}
+    , SYSDATE
+    )
+  </insert>
+  
+  <delete id="deleteDrawWish" parameterType="Map">
+    DELETE
+      FROM DRAW_WISHLIST_T
+     WHERE DRAW_NO = #{drawNo}
+       AND USER_NO = #{userNo}  
+  </delete>
+  
+  <select id="hasDrawWish" resultType="int"  parameterType="Map">
+    SELECT COUNT(*)
+      FROM DRAW_WISHLIST_T
+     WHERE DRAW_NO = #{drawNo}
+       AND USER_NO = #{userNo}
+  </select>
+  
+  <select id="getDrawWishCount" parameterType="int">
+    SELECT COUNT(*)
+      FROM (SELECT DW.DRAW_WISH_NO, DW.DRAW_NO, DW.USER_NO, DW.WISHED_AT,
+                   C.CATEGORY_NO, C.CATEGORY_NAME,
+                   D.TITLE, D.CONTENTS, D.PRICE, D.SELLER_NO,
+                   U.NICKNAME
+              FROM DRAW_WISHLIST_T DW INNER JOIN DRAW_T D
+                ON DW.DRAW_NO = D.DRAW_NO INNER JOIN CATEGORY_T C
+                ON D.CATEGORY_NO = C.CATEGORY_NO LEFT OUTER JOIN USER_T U
+                ON D.SELLER_NO = U.USER_NO
+             WHERE DW.USER_NO = #{userNo})
+  </select>
+  
+  <select id="getDrawWishList" parameterType="Map" resultMap="DrawMap">
+    SELECT A.DRAW_WISH_NO, A.DRAW_NO, A.USER_NO, A.WISHED_AT,
+           A.CATEGORY_NO, A.CATEGORY_NAME,
+           A.TITLE, A.CONTENTS, A.PRICE, A.SELLER_NO, A.WORK_TERM,
+           A.NICKNAME
+      FROM (SELECT DW.DRAW_WISH_NO, DW.DRAW_NO, DW.USER_NO, DW.WISHED_AT,
+                   C.CATEGORY_NO, C.CATEGORY_NAME,
+                   D.TITLE, D.CONTENTS, D.PRICE, D.SELLER_NO, D.WORK_TERM,
+                   U.NICKNAME,
+                   ROW_NUMBER() OVER(ORDER BY WISHED_AT DESC) AS RN
+              FROM DRAW_WISHLIST_T DW INNER JOIN DRAW_T D
+                ON DW.DRAW_NO = D.DRAW_NO INNER JOIN CATEGORY_T C
+                ON D.CATEGORY_NO = C.CATEGORY_NO LEFT OUTER JOIN USER_T U
+                ON D.SELLER_NO = U.USER_NO
+             WHERE DW.USER_NO = #{userNo}) A
+     WHERE A.RN BETWEEN #{begin} AND #{end}
+    </select>
+  
+  
+   
+</mapper>

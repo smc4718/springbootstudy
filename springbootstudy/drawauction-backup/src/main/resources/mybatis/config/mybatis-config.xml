@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE configuration
+  PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-config.dtd">
+
+<configuration>
+    
+  <!-- 설정 -->
+  <settings>
+    <setting name="mapUnderscoreToCamelCase" value="true"/>
+  </settings>
+
+  <typeAliases>
+    <typeAlias alias="DrawDto"            type="com.gdu.drawauction.dto.DrawDto"/>
+    <typeAlias alias="CategoryDto"        type="com.gdu.drawauction.dto.CategoryDto"/>
+    <typeAlias alias="UserDto"            type="com.gdu.drawauction.dto.UserDto"/>
+    <typeAlias alias="InactiveUserDto"    type="com.gdu.drawauction.dto.InactiveUserDto"/>
+	  <typeAlias alias="LeaveUserDto"       type="com.gdu.drawauction.dto.LeaveUserDto"/>
+    <typeAlias alias="ArtDto"             type="com.gdu.drawauction.dto.ArtDto"/>
+    <typeAlias alias="AuctionDto"         type="com.gdu.drawauction.dto.AuctionDto"/>
+    <typeAlias alias="AuctionImageDto"    type="com.gdu.drawauction.dto.AuctionImageDto"/>
+    <typeAlias alias="AuctionWishlistDto" type="com.gdu.drawauction.dto.AuctionWishlistDto"/>
+    <typeAlias alias="BidDto"             type="com.gdu.drawauction.dto.BidDto"/>
+    <typeAlias alias="NoticeDto"          type="com.gdu.drawauction.dto.NoticeDto"/>
+    <typeAlias alias="NoticeAttachDto"    type="com.gdu.drawauction.dto.NoticeAttachDto"/>
+    <typeAlias alias="InquiryDto"         type="com.gdu.drawauction.dto.InquiryDto"/>
+    <typeAlias alias="InquiryAttachDto"   type="com.gdu.drawauction.dto.InquiryAttachDto"/>
+    <typeAlias alias="AnswerDto"          type="com.gdu.drawauction.dto.AnswerDto"/>
+    <typeAlias alias="DrawImageDto"       type="com.gdu.drawauction.dto.DrawImageDto"/>
+    <typeAlias alias="DrawWishListDto"    type="com.gdu.drawauction.dto.DrawWishListDto"/>
+    <typeAlias alias="DrawReviewDto"      type="com.gdu.drawauction.dto.DrawReviewDto"/>
+    <typeAlias alias="DrawOrderDto"       type="com.gdu.drawauction.dto.DrawOrderDto"/>
+    <typeAlias alias="EmoneyDto"          type="com.gdu.drawauction.dto.EmoneyDto"/>
+    <typeAlias alias="AlarmDto"          type="com.gdu.drawauction.dto.AlarmDto"/>
+    <typeAlias alias="AdminDto"          type="com.gdu.drawauction.dto.AdminDto"/>
+    
+    <typeAlias alias="DrawDto2"            type="com.gdu.drawauction.dto.DrawDto2"/>
+    <typeAlias alias="DrawOrderDto2"       type="com.gdu.drawauction.dto.DrawOrderDto2"/>
+  </typeAliases>
+
+
+</configuration>

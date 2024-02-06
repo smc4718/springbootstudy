@@ -1,0 +1,472 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.gdu.drawauction.dao.DrawMapper">
+
+    <resultMap type="DrawDto"      id="DrawMap">
+    <id      column="DRAW_NO"    property="drawNo"/>
+    <result  column="TITLE"        property="title"/>
+    <result  column="PRICE"        property="price"/>
+    <result  column="CONTENTS"     property="contents"/>
+    <result  column="WIDTH"  property="width"/>
+    <result  column="HEIGHT" property="height"/>
+    <result  column="WORK_TERM" property="workTerm"/>
+    <result  column="DRAW_CREATED_AT" property="drawCreatedAt"/>
+    <association javaType="CategoryDto" property="categoryDto">
+	  <id        column="CATEGORY_NO"   property="categoryNo"/>
+	  <result    column="CATEGORY_NAME"          property="categoryName" />
+	</association>
+    <association javaType="UserDto"      property="userDto">
+      <id        column="USER_NO"        property="userNo"/>
+      <result    column="EMAIL"          property="email" />
+      <result    column="PW"             property="pw" />
+      <result    column="NAME"           property="name" />
+      <result    column="MOBILE"         property="mobile" />
+      <result    column="GENDER"         property="gender" />
+      <result    column="AGREE"          property="agree" />
+      <result    column="STATE"          property="state" />
+      <result    column="JOINED_AT"      property="joinedAt" />
+      <result    column="POSTCODE"       property="postcode" />
+      <result    column="ROAD_ADDRESS"   property="roadAddress" />
+      <result    column="JIBUN_ADDRESS"  property="jibunAddress" />
+      <result    column="DETAIL_ADDRESS" property="detailAddress" />
+      <result    column="NICKNAME" property="nickname" />
+      <result    column="INTRODUCTION" property="introduction" />
+    </association>
+  </resultMap>
+  
+  <resultMap type="DrawWishListDto"    id="DrawWishListMap">
+    <id      column="DRAW_WISH_NO"     property="drawWishNo"/>
+    <result  column="WISHED_AT"        property="wishedAt"/>
+    <association javaType="DrawDto"    property="drawDto">
+	  <id      column="DRAW_NO"      property="drawNo"/>
+	  <result  column="TITLE"        property="title"/>
+	  <result  column="PRICE"        property="price"/>
+	  <result  column="CONTENTS"     property="contents"/>
+	  <result  column="WIDTH"  		 property="width"/>
+	  <result  column="HEIGHT" 		 property="height"/>
+	  <result  column="WORK_TERM" 	 property="workTerm"/>
+	  <association javaType="CategoryDto" property="categoryDto">
+	  	<id        column="CATEGORY_NO"   property="categoryNo"/>
+	  	<result    column="CATEGORY_NAME"          property="categoryName" />
+	  </association>
+      <association javaType="UserDto"      property="userDto">
+      	<id        column="USER_NO"        property="userNo"/>
+      	<result    column="EMAIL"          property="email" />
+      	<result    column="PW"             property="pw" />
+      	<result    column="NAME"           property="name" />
+      	<result    column="MOBILE"         property="mobile" />
+      	<result    column="GENDER"         property="gender" />
+      	<result    column="AGREE"          property="agree" />
+      	<result    column="STATE"          property="state" />
+      	<result    column="JOINED_AT"      property="joinedAt" />
+      	<result    column="POSTCODE"       property="postcode" />
+      	<result    column="ROAD_ADDRESS"   property="roadAddress" />
+      	<result    column="JIBUN_ADDRESS"  property="jibunAddress" />
+      	<result    column="DETAIL_ADDRESS" property="detailAddress" />
+      	<result    column="NICKNAME"	   property="nickname" />
+      	<result    column="INTRODUCTION"   property="introduction" />
+      </association>
+	</association>
+  </resultMap>
+  
+  <resultMap type="DrawReviewDto" id="DrawReviewMap">
+  	<result column="REVIEW_CONTENTS" property="reviewContents"/>
+  	<result column="RATING" property="rating"/>
+  	<result column="CREATED_AT" property="createdAt"/>
+  	<association javaType="DrawDto"    property="drawDto">
+	  <id      column="DRAW_NO"      property="drawNo"/>
+	  <result  column="TITLE"        property="title"/>
+	  <result  column="PRICE"        property="price"/>
+	  <result  column="CONTENTS"     property="contents"/>
+	  <result  column="WIDTH"  		 property="width"/>
+	  <result  column="HEIGHT" 		 property="height"/>
+	  <result  column="WORK_TERM" 	 property="workTerm"/>
+	  <association javaType="CategoryDto" property="categoryDto">
+	  	<id        column="CATEGORY_NO"   property="categoryNo"/>
+	  	<result    column="CATEGORY_NAME"          property="categoryName" />
+	  </association>
+      <association javaType="UserDto"      property="userDto">
+      	<id        column="USER_NO"        property="userNo"/>
+      	<result    column="EMAIL"          property="email" />
+      	<result    column="PW"             property="pw" />
+      	<result    column="NAME"           property="name" />
+      	<result    column="MOBILE"         property="mobile" />
+      	<result    column="GENDER"         property="gender" />
+      	<result    column="AGREE"          property="agree" />
+      	<result    column="STATE"          property="state" />
+      	<result    column="JOINED_AT"      property="joinedAt" />
+      	<result    column="POSTCODE"       property="postcode" />
+      	<result    column="ROAD_ADDRESS"   property="roadAddress" />
+      	<result    column="JIBUN_ADDRESS"  property="jibunAddress" />
+      	<result    column="DETAIL_ADDRESS" property="detailAddress" />
+      	<result    column="NICKNAME"	   property="nickname" />
+      	<result    column="INTRODUCTION"   property="introduction" />
+      </association>
+	</association>
+	<association javaType="UserDto"      property="userDto">
+      	<id        column="USER_NO"        property="userNo"/>
+      	<result    column="EMAIL"          property="email" />
+      	<result    column="PW"             property="pw" />
+      	<result    column="NAME"           property="name" />
+      	<result    column="MOBILE"         property="mobile" />
+      	<result    column="GENDER"         property="gender" />
+      	<result    column="AGREE"          property="agree" />
+      	<result    column="STATE"          property="state" />
+      	<result    column="JOINED_AT"      property="joinedAt" />
+      	<result    column="POSTCODE"       property="postcode" />
+      	<result    column="ROAD_ADDRESS"   property="roadAddress" />
+      	<result    column="JIBUN_ADDRESS"  property="jibunAddress" />
+      	<result    column="DETAIL_ADDRESS" property="detailAddress" />
+      	<result    column="NICKNAME"	   property="nickname" />
+      	<result    column="INTRODUCTION"   property="introduction" />
+      </association>
+  </resultMap>
+  
+  <resultMap type="DrawOrderDto" id="DrawOrderMap">
+	<id 	column="ORDER_NO"        property="orderNo"/>
+	<result column="ORDER_DATE"      property="orderDate"/>
+	<result column="PRICE"           property="price"/>
+	<result column="RECEIVE_EMAIL"   property="receiveEmail"/>
+	<association javaType="DrawDto"  property="drawDto">
+	  <id      column="DRAW_NO"      property="drawNo"/>
+	  <result  column="TITLE"        property="title"/>
+	  <result  column="PRICE"        property="price"/>
+	  <result  column="CONTENTS"     property="contents"/>
+	  <result  column="WIDTH"  		 property="width"/>
+	  <result  column="HEIGHT" 		 property="height"/>
+	  <result  column="WORK_TERM" 	 property="workTerm"/>
+	  <association javaType="CategoryDto" property="categoryDto">
+	  	<id        column="CATEGORY_NO"   property="categoryNo"/>
+	  	<result    column="CATEGORY_NAME"          property="categoryName" />
+	  </association>
+      <association javaType="UserDto"      property="userDto">
+      	<id        column="USER_NO"        property="userNo"/>
+      	<result    column="EMAIL"          property="email" />
+      	<result    column="PW"             property="pw" />
+      	<result    column="NAME"           property="name" />
+      	<result    column="MOBILE"         property="mobile" />
+      	<result    column="GENDER"         property="gender" />
+      	<result    column="AGREE"          property="agree" />
+      	<result    column="STATE"          property="state" />
+      	<result    column="JOINED_AT"      property="joinedAt" />
+      	<result    column="POSTCODE"       property="postcode" />
+      	<result    column="ROAD_ADDRESS"   property="roadAddress" />
+      	<result    column="JIBUN_ADDRESS"  property="jibunAddress" />
+      	<result    column="DETAIL_ADDRESS" property="detailAddress" />
+      	<result    column="NICKNAME"	   property="nickname" />
+      	<result    column="INTRODUCTION"   property="introduction" />
+      </association>
+	</association>
+	<association javaType="UserDto"      property="userDto">
+      	<id        column="USER_NO"        property="userNo"/>
+      	<result    column="EMAIL"          property="email" />
+      	<result    column="PW"             property="pw" />
+      	<result    column="NAME"           property="name" />
+      	<result    column="MOBILE"         property="mobile" />
+      	<result    column="GENDER"         property="gender" />
+      	<result    column="AGREE"          property="agree" />
+      	<result    column="STATE"          property="state" />
+      	<result    column="JOINED_AT"      property="joinedAt" />
+      	<result    column="POSTCODE"       property="postcode" />
+      	<result    column="ROAD_ADDRESS"   property="roadAddress" />
+      	<result    column="JIBUN_ADDRESS"  property="jibunAddress" />
+      	<result    column="DETAIL_ADDRESS" property="detailAddress" />
+      	<result    column="NICKNAME"	   property="nickname" />
+      	<result    column="INTRODUCTION"   property="introduction" />
+      </association>
+  </resultMap>
+  
+  <resultMap type="EmoneyDto" id="EmoneyMap">
+  	<id column="EMONEY_NO" 			property="emoneyNo"/>
+	<result column="EMONEY_HISTORY" property="emoneyHistory"/>
+	<result column="EMONEY_DATE"    property="emoneyDate" javaType="java.sql.Date"/>
+	<association javaType="UserDto"      property="userDto">
+      <id        column="USER_NO"        property="userNo"/>
+      <result    column="EMAIL"          property="email" />
+      <result    column="PW"             property="pw" />
+      <result    column="NAME"           property="name" />
+      <result    column="MOBILE"         property="mobile" />
+      <result    column="GENDER"         property="gender" />
+      <result    column="AGREE"          property="agree" />
+      <result    column="STATE"          property="state" />
+      <result    column="JOINED_AT"      property="joinedAt" />
+      <result    column="POSTCODE"       property="postcode" />
+      <result    column="ROAD_ADDRESS"   property="roadAddress" />
+      <result    column="JIBUN_ADDRESS"  property="jibunAddress" />
+      <result    column="DETAIL_ADDRESS" property="detailAddress" />
+      <result    column="NICKNAME"	   property="nickname" />
+      <result    column="INTRODUCTION"   property="introduction" />
+    </association>
+  </resultMap>
+  
+  <insert id="insertDraw" parameterType="DrawDto">
+    <!-- INSERT 수행 이전에 파라미터 UploadDto의 uploadNo 필드에 UPLOAD_SEQ.NEXTVAL값을 저장한다. -->
+    <selectKey order="BEFORE" resultType="int" keyProperty="drawNo">
+      SELECT DRAW_SEQ.NEXTVAL
+        FROM DUAL
+    </selectKey>
+    INSERT INTO DRAW_T (
+        DRAW_NO
+      , SELLER_NO
+      , CATEGORY_NO
+      , TITLE
+      , CONTENTS
+      , WIDTH
+      , HEIGHT
+      , PRICE
+      , WORK_TERM
+      , DRAW_CREATED_AT
+    ) VALUES (
+        #{drawNo}
+      , #{userDto.userNo}
+      , #{categoryDto.categoryNo}
+      , #{title}
+      , #{contents}
+      , #{width}
+      , #{height}
+      , #{price}
+      , #{workTerm}
+      , SYSDATE
+    )
+  </insert>
+  
+  <insert id="insertImage" parameterType="DrawImageDto">
+    INSERT INTO DRAW_IMAGE_T (
+        DRAW_IMAGE_NO
+      , DRAW_NO
+      , PATH
+      , FILESYSTEM_NAME
+      , IMAGE_ORIGINAL_NAME
+      , HAS_THUMBNAIL
+    ) VALUES (
+        DRAW_IMAGE_SEQ.NEXTVAL
+      , #{drawNo}
+      , #{path}
+      , #{filesystemName}
+      , #{imageOriginalName}
+      , #{hasThumbnail}
+    )
+  </insert>
+  
+  <select id="getDrawCount" resultType="int">
+    SELECT COUNT(*)
+      FROM DRAW_T
+  </select>
+  
+  <select id="getDrawSearchCount" parameterType="int" resultType="int">
+    SELECT COUNT(*)
+      FROM DRAW_T
+     WHERE CATEGORY_NO = #{categoryNo}
+  </select>
+  
+  <select id="getDrawList" parameterType="Map" resultMap="DrawMap">
+    SELECT A.DRAW_NO, A.CATEGORY_NO, A.TITLE, A.PRICE, A.CONTENTS, A.WIDTH, A.HEIGHT, A.WORK_TERM, A.DRAW_CREATED_AT, A.USER_NO, A.NICKNAME, A.NAME, A.EMAIL, C.CATEGORY_NAME
+      FROM (SELECT ROW_NUMBER() OVER(ORDER BY DRAW_NO DESC) AS RN,
+                   D.DRAW_NO, D.CATEGORY_NO, D.TITLE, D.PRICE, D.CONTENTS, D.WIDTH, D.HEIGHT, D.WORK_TERM, D.DRAW_CREATED_AT, USR.USER_NO, USR.NICKNAME, USR.NAME, USR.EMAIL
+              FROM DRAW_T D LEFT OUTER JOIN USER_T USR
+                ON D.SELLER_NO = USR.USER_NO) A INNER JOIN CATEGORY_T C
+        ON A.CATEGORY_NO = C.CATEGORY_NO
+     WHERE A.RN BETWEEN #{begin} AND #{end}
+     ORDER BY A.DRAW_NO DESC
+  </select>
+  
+  <select id="getDrawSearchList" parameterType="Map" resultMap="DrawMap">
+    SELECT A.DRAW_NO, A.CATEGORY_NO, A.TITLE, A.PRICE, A.CONTENTS, A.WIDTH, A.HEIGHT, A.WORK_TERM, A.DRAW_CREATED_AT, A.USER_NO, A.NICKNAME, A.NAME, A.EMAIL, C.CATEGORY_NAME
+      FROM (SELECT ROW_NUMBER() OVER(ORDER BY DRAW_NO DESC) AS RN,
+                   D.DRAW_NO, D.CATEGORY_NO, D.TITLE, D.PRICE, D.CONTENTS, D.WIDTH, D.HEIGHT, D.WORK_TERM, D.DRAW_CREATED_AT, USR.USER_NO, USR.NICKNAME, USR.NAME, USR.EMAIL
+              FROM DRAW_T D LEFT OUTER JOIN USER_T USR
+                ON D.SELLER_NO = USR.USER_NO
+             WHERE CATEGORY_NO = #{categoryNo}) A INNER JOIN CATEGORY_T C
+        ON A.CATEGORY_NO = C.CATEGORY_NO
+     WHERE A.RN BETWEEN #{begin} AND #{end}
+     ORDER BY A.DRAW_NO DESC
+  </select>
+  
+  <select id="getDraw" parameterType="int" resultMap="DrawMap">
+    SELECT A.DRAW_NO, A.USER_NO, A.CATEGORY_NO, A.TITLE, A.CONTENTS, A.WIDTH, A.HEIGHT, A.PRICE, A.WORK_TERM, A.DRAW_CREATED_AT, C.CATEGORY_NAME, A.NICKNAME, A.EMAIL, A.NAME
+  	  FROM (SELECT D.DRAW_NO, D.SELLER_NO, D.CATEGORY_NO ,D.TITLE, D.CONTENTS, D.WIDTH, D.HEIGHT, D.PRICE, D.WORK_TERM, D.DRAW_CREATED_AT
+              	   , USR.USER_NO, USR.EMAIL, USR.NAME, USR.NICKNAME
+         	  FROM USER_T USR RIGHT OUTER JOIN DRAW_T D
+                ON USR.USER_NO = D.SELLER_NO) A INNER JOIN CATEGORY_T C
+    	ON A.CATEGORY_NO = C.CATEGORY_NO
+ 	 WHERE A.DRAW_NO = #{drawNo}
+  </select>
+  
+  <select id="getImageList" parameterType="int" resultType="DrawImageDto">
+    SELECT DRAW_IMAGE_NO, DRAW_NO, PATH, FILESYSTEM_NAME, IMAGE_ORIGINAL_NAME, HAS_THUMBNAIL
+ 	  FROM DRAW_IMAGE_T
+ 	 WHERE DRAW_NO = #{drawNo}
+  </select>
+  
+  <insert id="addWishList" parameterType="Map">
+	INSERT INTO DRAW_WISHLIST_T (
+	  DRAW_WISH_NO
+	, DRAW_NO
+    , USER_NO
+	, WISHED_AT
+    ) VALUES (
+	  DRAW_WISHLIST_SEQ.NEXTVAL
+	, #{drawNo}
+	, #{userNo}
+	, SYSDATE
+	)
+  </insert>
+  
+  <select id="wishCheck" parameterType="Map">
+	SELECT COUNT(*)
+  	  FROM DRAW_WISHLIST_T
+ 	 WHERE DRAW_NO = #{drawNo}
+   	   AND USER_NO = #{userNo}
+  </select>
+  
+  <delete id="removeWishList" parameterType="Map">
+	DELETE
+	  FROM DRAW_WISHLIST_T
+	 WHERE DRAW_NO = #{drawNo}
+   	   AND USER_NO = #{userNo}  
+  </delete>
+  
+  <select id="getImage" parameterType="int" resultType="DrawImageDto">
+    SELECT DRAW_IMAGE_NO, DRAW_NO, PATH, FILESYSTEM_NAME, IMAGE_ORIGINAL_NAME, HAS_THUMBNAIL
+      FROM DRAW_IMAGE_T
+     WHERE DRAW_IMAGE_NO = #{drawImageNo}
+  </select>
+  
+  <select id="getDrawImage" parameterType="int" resultType="DrawImageDto">
+    SELECT DRAW_IMAGE_NO, DRAW_NO, PATH, FILESYSTEM_NAME, IMAGE_ORIGINAL_NAME, HAS_THUMBNAIL
+      FROM DRAW_IMAGE_T
+     WHERE DRAW_NO = #{drawNo}
+       AND DRAW_IMAGE_NO = (SELECT MIN(DRAW_IMAGE_NO) FROM DRAW_IMAGE_T WHERE DRAW_NO = #{drawNo})
+  </select>
+  
+  <delete id="deleteImage" parameterType="int">
+    DELETE
+      FROM DRAW_IMAGE_T
+     WHERE DRAW_IMAGE_NO = #{drawImageNo}
+  </delete>
+  
+  <update id="updateDraw" parameterType="Map">
+    UPDATE DRAW_T
+       SET CATEGORY_NO = #{categoryNo}
+       	 , TITLE = #{title}
+       	 , PRICE = #{price}
+       	 , WIDTH = #{width}
+       	 , HEIGHT = #{height}
+       	 , WORK_TERM = #{workTerm}
+         , CONTENTS = #{contents}
+     WHERE DRAW_NO = #{drawNo}
+  </update>
+  
+  <delete id="deleteDraw" parameterType="int">
+    DELETE
+      FROM DRAW_T
+     WHERE DRAW_NO = #{drawNo}
+  </delete>
+  
+  <select id="getReviewCount" parameterType="int" resultType="int">
+    SELECT COUNT(*)
+      FROM DRAW_REVIEW_T
+     WHERE DRAW_NO = #{drawNo}
+  </select>
+  
+  <select id="getReviewList" parameterType="Map" resultMap="DrawReviewMap">
+	SELECT A.DRAW_NO, A.USER_NO, A.REVIEW_CONTENTS, A.RATING, A.CREATED_AT, A.NICKNAME
+	  FROM (SELECT ROW_NUMBER() OVER(ORDER BY CREATED_AT DESC) AS RN, D.DRAW_NO, D.BUYER_NO, D.REVIEW_CONTENTS, D.RATING, D.CREATED_AT, U.USER_NO, U.NICKNAME
+	          FROM USER_T U LEFT OUTER JOIN DRAW_REVIEW_T D
+	            ON U.USER_NO = D.BUYER_NO
+	         WHERE D.DRAW_NO = #{drawNo}) A
+	 WHERE A.RN BETWEEN #{begin} AND #{end}
+  </select>
+  
+  <select id="getOrderReview" parameterType="Map" resultMap="DrawOrderMap">
+	SELECT O.ORDER_NO, O.DRAW_NO, O.BUYER_NO, O.ORDER_DATE, O.PRICE, O.RECEIVE_EMAIL, O.DRAW_REQUEST, U.NICKNAME, U.USER_NO
+	  FROM DRAW_ORDER_T O INNER JOIN DRAW_T D
+	    ON O.DRAW_NO = D.DRAW_NO INNER JOIN USER_T U
+	    ON U.USER_NO = O.BUYER_NO
+	 WHERE O.BUYER_NO = #{userNo}
+	   AND O.DRAW_NO = #{drawNo}
+  </select>
+  
+  <insert id="addReview" parameterType="Map">
+	INSERT INTO DRAW_REVIEW_T (
+	  DRAW_NO
+	, BUYER_NO
+	, REVIEW_CONTENTS
+	, RATING
+	, CREATED_AT
+	) VALUES (
+	  #{drawNo}
+	, #{userNo}
+	, #{reviewContents}
+	, #{rating}
+	, SYSDATE
+	)
+  </insert>
+  
+  <insert id="addDrawOrder" parameterType="Map">
+    INSERT INTO DRAW_ORDER_T (
+	  ORDER_NO
+	, DRAW_NO
+	, BUYER_NO
+	, ORDER_DATE
+	, PRICE
+	, RECEIVE_EMAIL
+	, DRAW_REQUEST
+	) VALUES (
+	  DRAW_ORDER_SEQ.NEXTVAL
+	, #{drawNo}
+	, #{buyerNo}
+	, SYSDATE
+	, #{price}
+	, #{receiveEmail}
+	, #{drawRequest}
+	)
+	  
+  </insert>
+  
+  <select id="reviewCheck" parameterType="int" resultType="int">
+	SELECT COUNT(*)
+      FROM DRAW_REVIEW_T DR INNER JOIN DRAW_ORDER_T DO
+        ON DR.BUYER_NO = DO.BUYER_NO
+ 	 WHERE DR.BUYER_NO = #{userNo}
+   	   AND DR.DRAW_NO = #{drawNo}
+  </select>
+  
+  <select id="getEmoney" parameterType="int" resultType="int">
+    SELECT SUM(EMONEY_HISTORY)
+      FROM EMONEY_T
+     WHERE USER_NO = #{userNo}
+  </select>
+  
+  <insert id="insertBuyerEmoney" parameterType="Map">
+    INSERT INTO EMONEY_T (
+           EMONEY_NO
+         , USER_NO
+         , EMONEY_HISTORY
+         , EMONEY_DATE
+         ) VALUES (
+           EMONEY_SEQ.NEXTVAL
+         , #{buyerNo}
+         , -#{price}
+         , SYSDATE
+         )
+  </insert>
+  
+  <insert id="insertSellerEmoney" parameterType="Map">
+    INSERT INTO EMONEY_T (
+           EMONEY_NO
+         , USER_NO
+         , EMONEY_HISTORY
+         , EMONEY_DATE
+         ) VALUES (
+           EMONEY_SEQ.NEXTVAL
+         , #{userNo}
+         , #{price}
+         , SYSDATE
+         )
+  </insert>
+  
+</mapper>

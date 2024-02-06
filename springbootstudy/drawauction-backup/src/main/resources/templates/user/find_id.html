@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+
+<head th:replace="~{layout/header::head('아이디 찾기')}"></head>
+
+
+<body>
+	
+	<div th:replace="~{layout/header::header}"></div>
+  
+  	<div class="main_wrap">
+	   <div class="wrap wrap_5">
+		   <h2>회원님의 아이디를 확인해주세요</h2>
+		   <div style="margin-top: 20px" class="findIdResult" th:value="${findIdValue}"></div>
+		   <button type="button"><a th:href="@{/user/find.form}">비밀번호 변경하러 가기</a></button>
+	   </div>
+	</div>
+	
+<script th:inline="javascript">
+    // Thymeleaf 변수를 JavaScript로 직접 가져오기
+    var findIds = /*[[${findIds}]]*/ [];
+    
+    $(document).ready(function() {
+        fnfindIdResult();
+    });
+
+    const fnfindIdResult = () => {
+        // Thymeleaf 변수를 사용하여 결과를 설정
+        if (findIds.length === 0) {
+            $('.findIdResult').text('조회결과가 없습니다');
+            return;
+        } else {
+            var resultHtml = '';
+            for (var i = 0; i < findIds.length; i++) {
+                resultHtml += '<div>' +  '이메일 : '+findIds[i].email + '</div>';
+            }
+            $('.findIdResult').html(resultHtml);
+        }
+    };
+</script>
+	
+	<div th:replace="~{layout/footer::footer}"></div>
+	
+	
+</body>
+</html>
+
+    

@@ -1,0 +1,477 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+ 
+<head th:replace="~{layout/header::head('마이페이지')}"></head>
+
+<style>
+  
+  table, tr{
+    width: 1000px;
+    margin-bottom: 50px;
+    border-collapse:collapse;
+    border: 1px solid grey;
+    text-align:center;
+  }
+  
+  tr {
+    height: 30px;
+  }
+  
+  #my_info_text {
+    text-align: left;
+    padding-left: 20px;
+    height: 50px;
+    font-size: large;
+    width: 700px;
+  }
+
+  .ing {
+    height: 100px;
+  }
+  .title {
+    border-bottom: none;
+    vertical-align: bottom;
+  }
+  .val {
+    border-top: none;
+    vertical-align: top;
+  }
+  .title > td {
+    width: 160px;
+    font-size: 20px;
+  }
+  .val > td {
+    font-weight: 900;
+  }
+  .my_btn {
+    width: 140px;
+    height: 50px;
+  }
+  
+  .arrow_btn {
+    display: inline-block;
+    float: right;
+    font-size: 14px;
+    text-decoration: none;
+    margin-top: 20px;
+    margin-right: 3px;
+  }
+  .three_wrap {
+    display: flex;
+  }
+  .one_wrap, .one_wrap_my, .one_wrap_draw, .one_wrap_received_draw {
+    border: 1px solid grey;
+    width: 300px;
+    height:390px;
+    margin: 20px;
+    cursor: pointer;
+    border-radius: 5px;
+  }
+  .one_wrap_my {
+    height: 350px;
+  }
+  .one_wrap_draw {
+    height:400px;
+  }
+  .one_wrap_received_draw {
+    height:400px;
+  }
+  
+  .info {
+    margin-left: 10px;
+    font-weight: 500;
+  }
+  .value {
+    margin-right: 10px;
+    float: right;
+  }
+
+  .auction_ongoing {
+    -webkit-box-align: center;
+    align-items: center;
+    -webkit-box-pack: center;
+    justify-content: center;
+    width: 68px;
+    height: 28px;
+    padding: 1px 0px;
+    font-size: 12px;
+    font-family: "Spoqa Han Sans Neo";
+    font-weight: 700;
+    white-space: nowrap;
+    background: rgb(220, 245, 236);
+    color: rgb(19, 189, 126);
+    display: inline-flex;
+    border-radius: 4px;
+    margin-left: 10px;
+  }
+  .auction_end {
+    -webkit-box-align: center;
+    align-items: center;
+    -webkit-box-pack: center;
+    justify-content: center;
+    width: 68px;
+    height: 28px;
+    padding: 1px 0px;
+    font-size: 12px;
+    font-family: "Spoqa Han Sans Neo";
+    font-weight: 700;
+    white-space: nowrap;
+    background: rgb(254, 238, 223);
+    color: rgb(253, 53, 53);
+    display: inline-flex;
+    border-radius: 4px;
+    margin-left: 10px;
+  }
+  
+  .auction_image > img, .image {
+    width: 280px;
+    height: 170px; 
+    text-align: center;
+    object-fit: cover; /* 이미지를 꽉 채우도록 설정 */
+    border: 1px lightgray solid;
+    border-radius: 7px;
+    margin-left: 6px;
+  }
+  .my_list_wrap {
+    margin-top: 30px;
+  }
+  .title_ellipsis {
+  width: 230px;
+  display: -webkit-box;
+  -webkit-line-clamp: 2; /* 보여줄 줄 수 */
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  text-align: right;
+}
+
+.draw_title {
+  height: 50px;
+}
+.draw_info_wrap {
+  margin-top: 5px;
+}
+.draw:hover {
+  background-color: silver;
+  cursor: pointer;
+}
+.auction_status2 {
+  width: 100px;
+  float: right;
+}
+
+  
+</style>
+  
+<body>
+  
+  <div th:replace="~{layout/header::header}"></div>
+  <div class="wrap">
+    <div th:replace="~{mypage/menu::side-menu}"></div>
+  
+  
+  
+    <div class="right_wrap">
+      <table>
+        <thead>
+          <tr>
+            <td colspan="4" id="my_info_text">내 정보</td>
+            <td class="my_btn"><button class="btn btn-primary  me-md-2" id="btn_modify">회원정보수정</button></td>
+            <td class="my_btn"><button class="btn btn-primary  me-md-2" id="btn_charge">E-MONEY 충전</button></td>
+          </tr>      
+        </thead>
+        <tbody class="ing">
+          <tr class="title">
+            <td class="my_title">입찰 중 경매</td>
+            <td class="my_title">판매 중 경매</td>
+            <td class="my_title">찜한 경매</td>
+            <td class="my_title">찜한 그려드림</td>
+            <td class="my_emoney" colspan="2">E-MONEY</td>
+          </tr>
+          <tr class="val">
+            <td th:text="${biddingCount}"></td>
+            <td th:text="${artForSaleCount}"></td>
+            <td th:text="${wishAuctionCount}"></td>
+            <td th:text="${wishDrawCount}"></td>
+            <td colspan="2" th:text="|${#numbers.formatInteger(balance, 1, 'COMMA')} P|"></td>
+          </tr>
+        </tbody>
+      </table>
+        
+        <div id="bid_wrap" class="my_list_wrap">
+          <h2>
+            입찰작품
+            <a th:href="@{/mypage/getAuctionBidList.do}"class="arrow_btn">자세히보기 ></a>
+          </h2>
+          <hr>
+          
+          <div class="three_wrap">
+            <th:block th:each="b,vs:${bidList}" th:if="${vs.index<3}">
+              <div class="one_wrap auction" th:attr="data-auction_no=${b.auctionDto.auctionNo}">
+                <div class="auction_image"><img th:src="|${b.auctionDto.image.path}/s_${b.auctionDto.image.filesystemName}|" class="image" alt="썸네일"></div>
+                <th:block th:if="${b.auctionDto.status == 0}">
+                  <div class="auction_status1 auction_ongoing" th:text="경매진행중"><span class="info" style="display:none">진행상태</span></div>
+                  <th:block th:if="${b.price > b.bidderDto.myPrice}">
+                    <div class="auction_status2" th:text="재입찰요망" style="color: crimson"><span class="info" style="display:none">낙찰상태</span></div>
+                  </th:block>
+                  <th:block th:if="${b.price <= b.bidderDto.myPrice}">
+                    <div class="auction_status2" th:text="최고가입찰중" style="color: blue"><span class="info" style="display:none">낙찰상태</span></div>
+                  </th:block>
+                </th:block>
+                
+                <th:block th:if="${b.auctionDto.status == 1}">
+                  <div class="auction_status1 auction_end" th:text="경매종료"><span class="info" style="display:none">진행상태</span></div>
+                  <th:block th:if="${b.price > b.bidderDto.myPrice}">
+                    <div class="auction_status2" th:text="낙찰실패"><span class="info" style="display:none">낙찰상태</span></div>
+                  </th:block>
+                  <th:block th:if="${b.price <= b.bidderDto.myPrice}">
+                    <div class="auction_status2" th:text="낙찰성공"><span class="info" style="display:none">낙찰상태</span></div>
+                  </th:block>
+                </th:block>
+                <div class="auction_title"><span class="info">제목</span><span class="value" th:text="${b.auctionDto.artDto.title}"></span></div>
+                <div class="auction_price"><span class="info">내입찰가</span><span class="value" th:text="|${#numbers.formatInteger(b.bidderDto.myPrice, 1, 'COMMA')} P|"></span></div>
+                <div class="auction_price"><span class="info">현재입찰가</span><span class="value" th:text="|${#numbers.formatInteger(b.price, 1, 'COMMA')} P|"></span></div>
+                
+    
+                <div class="auction_date"><span class="info">종료</span><span class="value" th:text="${b.auctionDto.endAt}"></span></div>
+              </div>
+            </th:block>
+          </div>
+          
+        </div>
+        
+        <div id="sale_wrap" class="my_list_wrap">
+          <h2>
+            출품작품
+            <a th:href="@{/mypage/getAuctionSalesList.do}"class="arrow_btn">자세히보기 ></a>
+          </h2>
+          <hr>
+          
+          <div class="three_wrap">
+            <th:block th:each="s,vs:${salesList}" th:if="${vs.index<3}">
+              <div class="one_wrap auction" th:attr="data-auction_no=${s.auctionDto.auctionNo}">
+                <div class="auction_image"><img th:src="|${s.auctionDto.image.path}/s_${s.auctionDto.image.filesystemName}|" class="image" alt="썸네일"></div>
+                <th:block th:if="${s.auctionDto.status == 0}">
+                  <div class="auction_status1 auction_ongoing" th:text="경매진행중"><span class="info" style="display:none">진행상태</span></div>
+                  <div class="auction_status2" th:text="판매진행중" style="display:none"><span class="info" style="display:none">판매상태</span></div>
+                </th:block>
+                
+                <th:block th:if="${s.auctionDto.status == 1}">
+                  <div class="auction_status1 auction_end" th:text="경매종료"><span class="info" style="display:none">진행상태</span></div>
+                  <th:block th:if="${s.price == null}">
+                    <div class="auction_status2" th:text="유찰"><span class="info" style="display:none">판매상태</span></div>
+                  </th:block>
+                  <th:block th:if="${s.price != null}">
+                    <div class="auction_status2" th:text="판매완료"><span class="info" style="display:none">판매상태</span></div>
+                  </th:block>
+                </th:block>
+                <div class="auction_title"><span class="info">제목</span><span class="value" th:text="${s.auctionDto.artDto.title}"></span></div>
+                <div class="auction_price"><span class="info">시작가</span><span class="value" th:text="|${#numbers.formatInteger(s.auctionDto.startPrice, 1, 'COMMA')} P|"></span></div>
+                <div class="auction_price"><span class="info">현재입찰가</span><span class="value" th:text="|${#numbers.formatInteger(s.price, 1, 'COMMA')} P|"></span></div>
+                
+    
+                <div class="auction_date"><span class="info">종료</span><span class="value" th:text="${s.auctionDto.endAt}"></span></div>
+              </div>
+            </th:block>
+          </div>
+          
+        </div>
+        
+        <div id="my_draw_wrap" class="my_list_wrap">
+          <h2>
+            내가 올린 그려드림
+            <a th:href="@{/mypage/drawList.do?param=1}"class="arrow_btn">자세히보기 ></a>
+          </h2>
+          <hr>
+          
+          <div class="three_wrap" id="my_draw_list"></div>
+          
+        </div>
+        
+        <div id="order_draw_wrap" class="my_list_wrap">
+          <h2>
+            주문한 그려드림
+            <a th:href="@{/mypage/drawList.do?param=2}"class="arrow_btn">자세히보기 ></a>
+          </h2>
+          <hr>
+          
+          <div class="three_wrap" id="order_draw_list"></div>
+          
+        </div>
+        
+        <div id="received_order_draw_wrap" class="my_list_wrap">
+          <h2>
+            주문받은 그려드림
+            <a th:href="@{/mypage/drawList.do?param=3}"class="arrow_btn">자세히보기 ></a>
+          </h2>
+          <hr>
+          
+          <div class="three_wrap" id="received_order_draw_list"></div>
+          
+        </div>
+          
+          
+      </div>
+      
+  </div>
+  
+  <div th:replace="~{layout/footer::footer}"></div>
+  
+
+  <script th:inline="javascript">
+    
+   $(() => {
+     fnModify();
+     fnCharge();
+     fnAuctionDetail();
+     fnGetMyDrawList();
+     fnGetDrawOrderList();
+     fnGetDrawReceivedOrderList();
+     fnDrawDetail();
+   })
+    
+    const fnModify = () => {
+      $('#btn_modify').click(() => {
+        location.href = '/mypage/modify.form';
+      })
+    }
+    
+    const fnCharge = () => {
+      $('#btn_charge').click(() => {
+        location.href = '/mypage/charge.do';
+      })
+    }
+    
+    const fnAuctionDetail = () => {
+      $(document).on('click', '.auction', function() {
+        location.href = '/auction2/detail.do?auctionNo=' + $(this).data('auction_no');
+      })
+    }
+    
+    // 그려드림 목록
+    // 전역 변수
+    var page = 1;
+    var totalPage = 0;
+  
+    const fnGetMyDrawList = () => {
+      $.ajax({
+        // 요청
+        type: 'get',
+        url: '/mypage/getMyDrawList.do',
+        data: 'page=' + page,
+        // 응답
+        dataType: 'json',
+        success: (resData) => {
+          totalPage = resData.totalPage;
+          $.each(resData.myDrawList,(i, draw) => {
+            if(i < 3) {
+              let str = '<div class="one_wrap_my draw" data-draw_no="' + draw.drawNo + '">';
+              str +=   '<div class="draw_image_wrap"><img class="image" src="' + draw.image.path + '/s_' + draw.image.filesystemName + '"></div>';
+              str +=   '<div class="draw_info_wrap">';
+              str +=     '<div class="draw_title"><span class="info">제목</span><span class="value title_ellipsis">' + draw.title + '</span></div>';
+              str +=     '<div class="draw_category"><span class="info">카테고리</span><span class="value">' + draw.categoryDto.categoryName + '</span></div>';
+              str +=     '<div class="draw_workTerm"><span class="info">작업기간</span><span class="value">' + draw.workTerm + '일</span></div>';
+              str +=     '<div class="draw_price"><span class="info">가격</span><span class="value">' + draw.price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") + 'P</span></div>';
+              str +=     '<div id="drawNo" style="display:none">글번호: ' + draw.drawNo + '</div>';
+              str +=   '</div>';
+              str += '</div>';
+              $('#my_draw_list').append(str);
+            }
+          })
+        }
+      })
+    }
+    
+    const fnGetDrawOrderList = () => {
+      $.ajax({
+        // 요청
+        type: 'get',
+        url: '/mypage/getDrawOrderList.do',
+        data: 'page=' + page,
+        // 응답
+        dataType: 'json',
+        success: (resData) => {
+          totalPage = resData.totalPage;
+          $.each(resData.drawOrderList,(i, order) => {
+            if(i < 3) {
+              let draw = order.drawDto2;
+              let str = '<div class="one_wrap_draw draw" data-draw_no="' + draw.drawNo + '" data-order_no="' + order.orderNo + '" id="order' + order.orderNo + '">';
+              str +=   '<div class="draw_image_wrap"><img class="image" src="' + draw.image.path + '/s_' + draw.image.filesystemName + '"></div>';
+              str +=   '<div class="draw_info_wrap">';
+              str +=     '<div class="draw_title"><span class="info">제목</span><span class="value title_ellipsis">' + draw.title + '</span></div>';
+              str +=     '<div class="draw_category"><span class="info">카테고리</span><span class="value">' + draw.categoryDto.categoryName + '</span></div>';
+              str +=     '<div class="draw_orderDate"><span class="info">주문날짜</span><span class="value">' + order.orderDate + '</span></div>';
+              str +=     '<div class="draw_workTerm"><span class="info">작업기간</span><span class="value">' + draw.workTerm + '일</span></div>';
+              str +=     '<div class="draw_email"><span class="info">수령이메일</span><span class="value">' + order.receiveEmail + '</span></div>';
+              str +=     '<div class="draw_price"><span class="info">가격</span><span class="value">' + draw.price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") + 'P</span></div>';
+              str +=     '<div id="drawNo" style="display:none">글번호: ' + draw.drawNo + '</div>';
+              str +=   '</div>';
+              str += '</div>';
+              $('#order_draw_list').append(str);
+              fnURLFragment1();
+            }
+          })
+        }
+      })
+    }
+    
+    
+    const fnGetDrawReceivedOrderList = () => {
+      $.ajax({
+        // 요청
+        type: 'get',
+        url: '/mypage/getDrawReceivedOrderList.do',
+        data: 'page=' + page,
+        // 응답
+        dataType: 'json',
+        success: (resData) => {
+          totalPage = resData.totalPage;
+          $.each(resData.drawReceivedOrderList,(i, r) => {
+            if(i < 3) {
+              let draw = r.drawDto2;
+              let str = '<div class="one_wrap_received_draw draw" data-draw_no="' + draw.drawNo + '" data-order_no="' + r.orderNo + '" id="order' + r.orderNo + '">';
+              str +=   '<div class="draw_image_wrap"><img class="image" src="' + draw.image.path + '/s_' + draw.image.filesystemName + '"></div>';
+              str +=   '<div class="draw_info_wrap">';
+              str +=     '<div class="draw_title"><span class="info">제목</span><span class="value title_ellipsis">' + draw.title + '</span></div>';
+              str +=     '<div class="draw_category"><span class="info">카테고리</span><span class="value">' + draw.categoryDto.categoryName + '</span></div>';
+              str +=     '<div class="draw_orderDate"><span class="info">주문날짜</span><span class="value">' + r.orderDate + '</span></div>';
+              str +=     '<div class="draw_workTerm"><span class="info">작업기간</span><span class="value">' + draw.workTerm + '일</span></div>';
+              str +=     '<div class="draw_email"><span class="info">수령이메일</span><span class="value">' + r.receiveEmail + '</span></div>';
+              str +=     '<div class="draw_price"><span class="info">가격</span><span class="value">' + draw.price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") + 'P</span></div>';
+              str +=     '<div id="drawNo" style="display:none">글번호: ' + draw.drawNo + '</div>';
+              str +=   '</div>';
+              str += '</div>';
+              $('#received_order_draw_list').append(str);
+              fnURLFragment2();
+            }
+          })
+        }
+      })
+    }
+    
+    
+   const fnDrawDetail = () => {
+      $(document).on('click', '.one_wrap_my', function() {
+        location.href = '/draw/detail.do?drawNo=' + $(this).data('draw_no');
+      })
+    }
+    
+  const fnURLFragment1 = () => {
+    $(document).on('click', '.one_wrap_draw', function() {
+      location.href = '/mypage/drawList.do?param=2&orderNo=' + $(this).data('order_no');
+      console.log($(this).data('order_no'));
+    })
+  }
+    
+  const fnURLFragment2 = () => {
+    $(document).on('click', '.one_wrap_received_draw', function() {
+      location.href = '/mypage/drawList.do?param=3&orderNo=' + $(this).data('order_no');
+    })
+  }
+    
+  </script>
+  
+
+  
+</body>
+</html>

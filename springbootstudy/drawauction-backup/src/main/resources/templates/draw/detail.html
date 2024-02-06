@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="~{layout/header::head(|${draw.userDto.nickname}의 게시글|)}"></head>
+<script src="//developers.kakao.com/sdk/js/kakao.min.js"></script>
+
+<link rel="stylesheet" th:href="@{/css/drawDetail.css(ver=1.3)}" />
+
+
+<body>
+  
+  <div th:replace="~{layout/header::header}"></div>
+  
+  <div class="main_wrap">
+      <div class="wrap">
+        
+        
+<div class="grid-container">
+   <div class="grid-item1">
+      <div class="artist">
+         <div>작가사진</div>
+         <div class="nick" th:text="|${draw.userDto.nickname}|"></div>
+      </div>                   
+   </div>
+   
+      <!--두번째 그리드-->
+   <div class="grid-item">
+   <div class="mody_delete">
+       <th:block th:if="${session.user != null}">
+         <th:block th:if="${session.user.userNo == draw.userDto.userNo}">
+           <form id="frm_btn">
+             <input type="hidden" id="drawNo" name="drawNo" th:value="${draw.drawNo}">
+             <button type="button" id="btn_edit" class="modify_btn">편집</button>
+             <button type="button" id="btn_remove" class="delete_btn">삭제</button>
+           </form>
+         </th:block>
+       </th:block>                 
+     </div>   
+   </div>  
+</div>      
+
+
+<!--그림, 설명, 버튼-->
+        
+<div class="grid-container">
+   <div class="grid-item1">
+      <th:block th:if="${#lists.isEmpty(imageList)}">
+                <div>첨부 없음</div>          
+              </th:block>
+              <th:block th:if="${not #lists.isEmpty(imageList)}">
+                <th:block th:each="img:${imageList}">
+                  <div class="image" th:data-image_no="${img.drawImageNo}">
+                    <th:block th:if="${img.hasThumbnail == 1}">
+                      <img th:src="@{|${img.path}/s_${img.filesystemName}|}" alt="썸네일">
+                    </th:block>
+                    <th:block th:if="${img.hasThumbnail == 0}">
+                      <img th:src="@{/image/image1.png}" alt="썸네일" width="50">
+                    </th:block>
+                  </div>
+                </th:block>
+      </th:block>
+   </div>   
+   <!--두번째 열-->
+   <div class="grid-item">
+<div style="display: flex; align-items: center; margin-bottom: 10%; justify-content: flex-start;">
+    <i id="wish_list" th:class="|${draw.heart} fa-heart fa-2xl|" style="color: rgb(84, 186, 125);"></i>
+    <a id="btnKakao" class="link-icon kakao" href="javascript:shareKakao();">
+        <img th:src="@{/image/kakao아이콘.png}" width="20%" style="margin-left: 5px; /* 조절 가능한 간격 */">
+    </a>
+</div>
+
+
+      
+<div th:text="|${draw.categoryDto.categoryName}|" class="category"></div>
+<div th:text="|${draw.title}|" class="art_title"></div>
+               
+<div class="grid_2" style="margin-top: 20%;">
+   <div class="sub_title">가격</div>
+   <div th:text="|${#numbers.formatInteger(draw.price, 0, 'COMMA')}P|" class="sub_contents_now"></div>
+</div>
+               
+<div class="grid_2">
+   <div class="sub_title">작업기간</div>
+   <div th:text="|결제일로부터 ${draw.workTerm} 일|" class="sub_contents"></div>
+</div>   
+   
+     <form id="frm_buy_report" style="margin-top: 15%;">
+          <input type="hidden" id="drawNo" name="drawNo" th:value="${draw.drawNo}">
+          <th:block th:if="${session.user != null}">
+            <input type="hidden" name="userNo" id="userNo" th:value="${session.user.userNo}">
+         </th:block>
+          <div>
+            <button id="btn_orderPayment" style="background-color: rgb(84, 186, 125);"type="button">주문 / 결제하기</button>
+         </div>
+          <div>
+           <button id="btn_report" style="background-color: #ff0000;" type="button">신고하기</button>
+         </div>
+        </form>
+   </div>
+</div>
+
+<!--작품정보-->
+<div style="margin-top: 10%;">
+     <div class="art_detail">작품정보</div>
+         <div th:text="|작품 가로길이(px) : ${draw.width}|" style="margin-bottom: 5px"></div>
+         <div th:text="|작품 세로길이(px) : ${draw.height}|" style="margin-bottom: 5px"></div>
+      
+      <div class="art_contents">작품설명</div>
+                  <th:block th:if="${#strings.isEmpty(draw.contents)}">
+                    <div>내용없음</div>
+                  </th:block>
+                  <th:block th:if="${not #strings.isEmpty(draw.contents)}">
+                    <div th:text="${draw.contents}"></div>
+                  </th:block>
+</div>
+
+
+<hr style="margin-top: 10%; margin-bottom: 5%;">
+
+  <div>
+        <form id="frm_review_add" method="post" action="/draw/addReview.do">
+          <div class="input-group mb-3">
+            <!-- 로그인 안 한 경우 -->
+            <th:block th:if="${session.user == null}">              
+              <input type="hidden" name="userNo" th:value="0">
+            </th:block>
+            <!-- 로그인 한 경우 -->
+            <th:block th:if="${session.user != null and orderReview != '' and session.user.userNo == orderReview.userDto.userNo and reviewCheck == 0}">
+              <input type="hidden" name="userNo" th:value="${session.user.userNo}">
+              <input type="hidden" name="sellerNo" th:value="${draw.userDto.userNo}">
+              <input type="hidden" name="drawNo" th:value="${draw.drawNo}">
+              <div>
+               <label for="rating" class="form-label">별점</label>
+               <div>
+                <select name="rating" id="rating">
+                 <option value="1">1</option>  
+                 <option value="2">2</option>  
+                <option value="3">3</option>  
+                <option value="4">4</option>  
+                <option value="5">5</option>  
+              </select>
+            </div>
+           </div>
+              <textarea rows="5" name="reviewContents" class="form-control" id="reviewContents" placeholder="후기를 작성해 주세요"></textarea>
+              <button type="button" class="btn btn-primary btn-sm" id="btn_review_add">작성완료</button>
+            </th:block>
+          </div>
+        </form>
+      </div>
+    
+   <div>
+     <h4>상품후기</h4>
+     <div id="review_container"class="form-control" style="margin-bottom: 15%;">
+       <table id="review_container2" class="table">
+         <thead>
+           <tr>
+             <th>작성자</th>
+             <th>별점</th>
+             <th>내용</th>
+             <th>작성일</th>
+           </tr>
+         </thead>
+         <tbody id="review_list">
+         </tbody>
+       </table>
+     </div>
+
+
+
+
+
+
+<!--ㅇㄹㄴㅇㄹㄴㅇ-->
+    <script th:inline="javascript">
+       // 전역 변수
+      var frmBtn = $('#frm_btn');
+      var page = 1;
+      var totalPage = 0;
+      var drawNo = $('#drawNo').val();
+      var userNo = /*[[${session.user != null ? session.user.userNo : null}]]*/ null;
+      var drawUserNo = /*[[${draw.userDto.userNo}]]*/ null;
+      const fnEdit = () => {
+        $('#btn_edit').click(() => {
+            frmBtn.attr('action', '/draw/edit.form');
+            frmBtn.attr('method', 'get');
+            frmBtn.submit();
+       })
+      }
+      
+      const fnRemove = () => {
+        $('#btn_remove').click(() => {
+          if(confirm('해당 게시글을 삭제할까요?')){
+            frmBtn.attr('action', '/draw/removeDraw.do');
+            frmBtn.attr('method', 'post');
+            frmBtn.submit();
+          }
+        })
+      }
+      
+      const fnOrderPayment = () => {
+      
+        $('#btn_orderPayment').click((ev) => {
+        if(userNo != drawUserNo) {
+            $('#frm_buy_report').attr('action', '/draw/orderPayment.form');
+            $('#frm_buy_report').attr('method', 'get');
+            $('#frm_buy_report').submit();
+        } else {
+         alert("자신의 게시글은 주문/결제 할 수 없습니다.")
+         ev.preventDefault();
+         return;
+        }
+        })
+      }
+      
+      const fnReport = () => {
+      
+        $('#btn_report').click((ev) => {
+        if(userNo != drawUserNo) {
+            $('#frm_buy_report').attr('action', '/inquiry/write.form');
+            $('#frm_buy_report').attr('method', 'get');
+            $('#frm_buy_report').submit();
+        } else {
+         alert("자신의 게시글은 신고할 수 없습니다.")
+         ev.preventDefault();
+         return;
+        }
+        })
+      }
+    
+      const fnModifyResult = () => {
+        let modifyResult = /*[[${modifyResult}]]*/ null;
+        if(modifyResult !== null){
+          if(modifyResult === 1){
+            alert('게시글이 수정되었습니다.');
+          } else {
+            alert('게시글이 수정되지 않았습니다.');
+          }
+        }
+      }
+      
+      const fnAddDrawOrderResult = () => {
+        let resultSum = /*[[${resultSum}]]*/ null;
+        if(resultSum !== null){
+          if(resultSum === 3){
+            alert('결제가 완료되었습니다.');
+          } else {
+            alert('결제가 실패했습니다.');
+          }
+        }
+      }
+     
+      const fnWishListControll = () => {
+      $('#wish_list').click(() => {
+        $.ajax({
+         type: 'post',
+          url: '/draw/WishListControll.do',
+          data: { 
+               drawNo: drawNo,
+                },
+          dataType: 'json',
+          success: (resData) => {
+           if(resData.addWishResult == 1) {
+             $('#wish_list').removeClass('fa-regular fa-heart fa-2xl');
+             $('#wish_list').addClass('fa-solid fa-heart fa-2xl');
+           } else if(resData.removeWishResult == 1) {
+             $('#wish_list').removeClass('fa-solid fa-heart fa-2xl');
+            $('#wish_list').addClass('fa-regular fa-heart fa-2xl');
+           }
+          }
+         
+        })
+      })
+     }
+     
+     const fnScroll = () => {
+        
+      var timerId;  // 최초 undefined 상태
+        
+      $(window).on('scroll', () => {
+          
+        if(timerId){  // timerId가 undefined이면 false로 인식, timerId가 값을 가지면 true로 인식
+          clearTimeout(timerId);
+        }
+          
+        timerId = setTimeout(() => {  // setTimeout 실행 전에는 timerId가 undefined 상태, setTimeout이 한 번이라도 동작하면 timerId가 값을 가짐
+            
+          let scrollTop = $(window).scrollTop();     // 스크롤바 위치(스크롤 된 길이)
+          let windowHeight = $(window).height();     // 화면 전체 크기
+          let documentHeight = $(document).height(); // 문서 전체 크기
+            
+          if((scrollTop + windowHeight + 100) >= documentHeight) {  // 스크롤이 바닥에 닿기 100px 전에 true가 됨
+            if(page > totalPage){  // 마지막 페이지를 보여준 이후에 true가 됨
+              return;              // 마지막 페이지를 보여준 이후에는 아래 코드를 수행하지 말 것 
+            }
+            page++;
+            fnReviewtList();
+          }
+            
+        }, 200);  // 200밀리초(0.2초) 후 동작(시간은 임의로 조정 가능함)
+      })
+    }
+    
+    const fnReviewtList = () => {
+      $.ajax({
+        // 요청
+        type: 'get',
+        url: '/draw/getReviewList.do',
+        data: 'page=' + page + '&drawNo=[[${draw.drawNo}]]',
+        // 응답
+        dataType: 'json',
+        success: (resData) => {
+          $('#review_list').empty();
+          if(resData.reviewList.length === 0){
+            $('#review_container2').css('display', 'none');
+            $('#review_container').html('<div class="text-center my-3">작성된 후기가 없습니다.</div>');
+            return;
+          }
+          $.each(resData.reviewList, (i, r) => {
+            var createdAt = new Date(r.createdAt);
+            var formattedCreatedAt = createdAt.toISOString().slice(0, 16).replace('T', ' ');
+            let str = '<tr>';
+            str += '<td style="color: #1E90FF">' + r.userDto.nickname + '</td>';
+            str += '<td>' + r.rating + '</td>';
+            str += '<td>' + r.reviewContents + '</td>';
+            str += '<td>' + formattedCreatedAt + '</td>';
+            str += '</tr>';
+            $('#review_list').append(str);
+            })
+          }
+        })
+      }
+      
+      const fnReviewResult = () => {
+      let addReviewResult = /*[[${addReviewResult}]]*/ null;
+      if(addReviewResult !== null){
+        if(addReviewResult === 1){
+          alert('후기가 작성되었습니다.');
+        } else {
+          alert('후기 작성이 실패했습니다.');
+        }
+      }
+    }
+    
+    var nickname = $('.artist_info').text();
+    function shareKakao() {
+
+     // JavaScript 키 설정
+     Kakao.init('e2d75a3c7c1b1cd979109692b99fdb3c');
+   
+     // 카카오링크 생성
+     Kakao.Link.createDefaultButton({
+       container: '#btnKakao', // 카카오공유버튼ID
+       objectType: 'feed',
+       content: {
+         title: "들어옥션", // 보여질 제목
+         description: "들어옥션 " + '[[${draw.userDto.nickname}]]' + "의 그려드림 상세보기 링크", // 보여질 설명
+         imageUrl: "https://i.ibb.co/ZXqhV0w/image.png", // 이미지 URL
+         imageWidth: 200,
+          imageHeight: 100,
+         link: {
+            mobileWebUrl: "http://localhost:8080/draw/detail.do?drawNo=" +  drawNo,
+            webUrl: "http://localhost:8080/draw/detail.do?drawNo=" +  drawNo
+         }
+       }
+     });
+   }
+   
+   const fnReviewConfirm = () => {
+     $('#btn_review_add').click((ev) => {
+      var reviewContents = $('#reviewContents').val();
+        var byte = 0;
+        for (var i=0; i<reviewContents.length; ++i) {
+        (reviewContents.charCodeAt(i) > 127) ? byte += 3 : byte++ ;
+        }
+        if(byte > 200){
+          alert("후기내용은 최대 200BYTE 입니다.")
+           ev.preventDefault();
+           return;
+        }
+         if(confirm('후기는 삭제하거나 수정할 수 없습니다. 작성을 완료하시겠습니까?')){
+        $('#frm_review_add').submit();
+      }
+     })
+   }
+   
+     
+      fnAddDrawOrderResult();
+      fnReviewResult();    
+     fnReviewtList();
+      fnScroll();
+      fnEdit();
+      fnRemove();
+      fnModifyResult();
+      fnWishListControll();
+      fnReviewtList();
+      fnOrderPayment();
+      fnReviewConfirm();
+      fnReport();
+      
+    </script>
+      
+        
+     </div>
+
+ </div>
+
+  
+  <div th:replace="~{layout/footer::footer}"></div>
+  
+</body>
+</html>

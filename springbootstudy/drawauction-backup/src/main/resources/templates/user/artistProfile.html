@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+
+<head th:replace="~{layout/header::head(|${session.user.nickname} │ 작가 페이지|)}"></head>
+
+
+<body>
+	<div th:replace="~{layout/header::header}"></div>
+
+	<div class="main_wrap">
+
+		<!--프로필 섹션-->
+<section class="profile">
+	<!--유저정보 컨테이너-->
+	<div class="profileContainer">
+
+		<!--유저정보 및 사진등록 구독하기-->
+		<div class="profile-right">
+			<div class="name-group">
+				<h2>${profileDto.name}</h2>
+					</c:otherwise>
+				</c:choose>
+			</div>
+
+			<div class="subscribe">
+				<ul>
+					<li><a href=""> 게시물<span></span>
+					</a></li>
+					<li><a href="javascript:subscribeInfoModalOpen(${profileDto.id});"> 구독정보<span></span>
+					</a></li>
+				</ul>
+			</div>
+			<div class="state">
+				<h4>${profileDto.bio}</h4>
+				<h4>${profileDto.website}</h4>
+			</div>
+		</div>
+		<!--유저정보 및 사진등록 구독하기-->
+
+	</div>
+</section>
+
+<script src="/js/profile.js"></script>
+
+
+
+
+	</div>
+	
+	
+	
+	<div th:replace="~{layout/footer::footer}"></div>
+	
+	
+</body>
+</html>
+
+    

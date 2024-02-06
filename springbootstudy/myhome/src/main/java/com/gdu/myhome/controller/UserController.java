@@ -157,10 +157,4 @@ public class UserController {
     userService.active(session, request, response);
   }
   
-  
-  
-  
-  
-  
-  
 }

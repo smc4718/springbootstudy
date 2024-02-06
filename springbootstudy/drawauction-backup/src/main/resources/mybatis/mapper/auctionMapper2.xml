@@ -1,0 +1,353 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.gdu.drawauction.dao.AuctionMapper2">
+
+  <!-- AuctionDto에 대한 resultMap -->
+  <resultMap type="AuctionDto" id="AuctionMap">
+      <id column="AUCTION_NO"       property="auctionNo"/>
+      <result column="START_PRICE"  property="startPrice"/>
+      <result column="BUY_PRICE"    property="buyPrice"/>
+      <result column="START_AT"     property="startAt"/>
+      <result column="END_AT"       property="endAt"/>
+      <result column="STATUS"       property="status"/>
+      <result column="PRICE"        property="price"/>
+      <association javaType="ArtDto"      property="artDto">
+        <id column="ART_NO"         property="artNo"/>
+        <result column="TITLE"      property="title"/>
+        <result column="CONTENTS"   property="contents"/>
+        <result column="ART_TYPE"   property="artType"/>
+        <result column="WIDTH"      property="width"/>
+        <result column="HEIGHT"     property="height"/>
+        <association javaType="UserDto"    property="sellerDto">
+          <id column="USER_NO"              property="userNo"/>
+          <result column="EMAIL"            property="email"/>
+          <result column="PW"               property="pw"/>
+          <result column="NAME"             property="name"/>
+          <result column="MOBILE"           property="mobile"/>
+          <result column="GENDER"           property="gender"/>
+          <result column="AGREE"            property="agree"/>
+          <result column="STATE"            property="state"/>
+          <result column="JOINED_AT"        property="joinedAt"/>
+          <result column="POSTCODE"         property="postcode"/>
+          <result column="ROAD_ADDRESS"     property="roadAddress"/>
+          <result column="JIBUN_ADDRESS"    property="jibunAddress"/>
+          <result column="DETAIL_ADDRESS"   property="detailAddress"/>
+          <result column="NICKNAME"         property="nickname"/>
+          <result column="INTRODUCTION"     property="introduction"/>
+        </association>
+        <association javaType="CategoryDto" property="categoryDto">
+          <id        column="CATEGORY_NO"     property="categoryNo"/>
+          <result    column="CATEGORY_NAME"   property="categoryName" />
+        </association>
+      </association>
+  </resultMap>
+  
+  <!-- BidDto에 대한 resultMap -->
+  <resultMap type="BidDto"        id="BidMap">
+    <id column="BID_NO"           property="bidNo"/>
+    <result column="PRICE"        property="price" />
+    <result column="BID_AT"       property="bidAt" />
+    <result column="POSTCODE"     property="postcode" />
+    <result column="ROAD_ADDRESS" property="roadAddress" />
+    <result column="JIBUN_ADDRESS" property="jibunAddress" />
+    <result column="DETAIL_ADDRESS" property="detailAddress" />
+    <association javaType="UserDto"    property="bidderDto">
+      <id column="USER_NO"              property="bidderNo"/>
+      <result column="EMAIL"            property="email"/>
+      <result column="PW"               property="pw"/>
+      <result column="NAME"             property="name"/>
+      <result column="MOBILE"           property="mobile"/>
+      <result column="GENDER"           property="gender"/>
+      <result column="AGREE"            property="agree"/>
+      <result column="STATE"            property="state"/>
+      <result column="JOINED_AT"        property="joinedAt"/>
+      <result column="POSTCODE"         property="postcode"/>
+      <result column="ROAD_ADDRESS"     property="roadAddress"/>
+      <result column="JIBUN_ADDRESS"    property="jibunAddress"/>
+      <result column="DETAIL_ADDRESS"   property="detailAddress"/>
+      <result column="NICKNAME"         property="nickname"/>
+      <result column="INTRODUCTION"     property="introduction"/>
+      <result column="MY_PRICE"         property="myPrice" />
+    </association>
+  
+  </resultMap>
+
+  
+  <select id="getAuctionList" parameterType="Map" resultMap="AuctionMap">
+    SELECT D.AUCTION_NO, D.START_PRICE, D.BUY_PRICE, D.START_AT, D.END_AT, D.STATUS, 
+           D.ART_NO, D.TITLE, D.CONTENTS, D.ART_TYPE, D.WIDTH, D.HEIGHT,
+           D.USER_NO, D.NICKNAME,
+           D.CATEGORY_NO, D.CATEGORY_NAME,
+           D.PRICE, D.BID_NO       
+      FROM (SELECT ROW_NUMBER() OVER(ORDER BY AUC.AUCTION_NO DESC) AS RN,
+                   AUC.AUCTION_NO, AUC.START_PRICE, AUC.BUY_PRICE, AUC.START_AT, AUC.END_AT, AUC.STATUS, 
+                   A.ART_NO, A.TITLE, A.CONTENTS, A.ART_TYPE, A.WIDTH, A.HEIGHT,
+                   U.USER_NO, U.NICKNAME,
+                   C.CATEGORY_NO, C.CATEGORY_NAME,
+                   B.BID_NO, B.PRICE
+              FROM AUCTION_T AUC, ART_T A, USER_T U, CATEGORY_T C, BID_T B
+             WHERE AUC.ART_NO = A.ART_NO
+               AND A.SELLER_NO = U.USER_NO
+               AND A.CATEGORY_NO = C.CATEGORY_NO 
+               AND AUC.AUCTION_NO = B.AUCTION_NO(+)
+               AND (B.PRICE IS NULL OR B.PRICE = (SELECT MAX(PRICE) FROM BID_T WHERE AUCTION_NO = AUC.AUCTION_NO))) D 
+      WHERE RN BETWEEN #{begin} AND #{end}
+  </select>
+  
+  <select id="getAuctionCount" resultType="int">
+    SELECT COUNT(*)
+      FROM AUCTION_T
+  </select>
+  
+  <select id="getAuction" parameterType="int" resultMap="AuctionMap">
+    SELECT D.AUCTION_NO, D.START_PRICE, D.BUY_PRICE, D.START_AT, D.END_AT, D.STATUS, 
+           D.ART_NO, D.TITLE, D.CONTENTS, D.ART_TYPE, D.WIDTH, D.HEIGHT,
+           D.USER_NO, D.NICKNAME, D.EMAIL,
+           D.CATEGORY_NO, D.CATEGORY_NAME,
+           D.PRICE        
+      FROM (SELECT ROW_NUMBER() OVER(ORDER BY AUC.AUCTION_NO DESC) AS RN,
+                   AUC.AUCTION_NO, AUC.START_PRICE, AUC.BUY_PRICE, AUC.START_AT, AUC.END_AT, AUC.STATUS, 
+                   A.ART_NO, A.SELLER_NO, A.TITLE, A.CONTENTS, A.ART_TYPE, A.WIDTH, A.HEIGHT,
+                   U.USER_NO, U.NICKNAME, U.EMAIL,
+                   C.CATEGORY_NO, C.CATEGORY_NAME,
+                   B.BID_NO, B.PRICE
+              FROM AUCTION_T AUC, ART_T A, USER_T U, CATEGORY_T C, BID_T B
+             WHERE AUC.ART_NO = A.ART_NO
+               AND A.SELLER_NO = U.USER_NO
+               AND A.CATEGORY_NO = C.CATEGORY_NO 
+               AND AUC.AUCTION_NO = B.AUCTION_NO(+)
+               AND (B.PRICE IS NULL OR B.PRICE = (SELECT MAX(PRICE) FROM BID_T WHERE AUCTION_NO = AUC.AUCTION_NO))
+               AND AUC.AUCTION_NO = #{auctionNo}) D
+  </select>
+  
+  <insert id="insertAuctionWishlist" parameterType="Map">
+    INSERT INTO AUCTION_WISHLIST_T (
+        AUCTION_WISH_NO,
+        AUCTION_NO,
+        USER_NO,
+        WISHED_AT
+        ) VALUES (
+        AUCTION_WISHLIST_SEQ.NEXTVAL,
+        #{auctionNo},
+        #{userNo},
+        SYSDATE
+    )
+  </insert>
+  
+  <delete id="deleteAuctionWishlist" parameterType="Map">
+    DELETE AUCTION_WISHLIST_T
+     WHERE AUCTION_NO = #{auctionNo}
+       AND USER_NO = #{userNo}
+  </delete>
+  
+  <select id="hasAuctionWishlist" resultType="int"  parameterType="Map">
+    SELECT COUNT(*)
+      FROM AUCTION_WISHLIST_T
+     WHERE AUCTION_NO = #{auctionNo}
+       AND USER_NO = #{userNo}
+  </select>
+  
+  <select id="getBidCount" resultType="int" parameterType="int">
+    SELECT COUNT(*)
+      FROM BID_T
+     WHERE AUCTION_NO = #{auctionNo}
+  </select>
+  
+  <select id="getImageList" parameterType="int" resultType="AuctionImageDto">
+    SELECT AUCTION_IMAGE_NO, AUCTION_NO, PATH, FILESYSTEM_NAME, IMAGE_ORIGINAL_NAME, HAS_THUMBNAIL
+    FROM AUCTION_IMAGE_T
+   WHERE AUCTION_NO = #{auctionNo}
+  </select>
+  
+  <select id="getImage" parameterType="int" resultType="AuctionImageDto">
+    SELECT AUCTION_IMAGE_NO, AUCTION_NO, PATH, FILESYSTEM_NAME, IMAGE_ORIGINAL_NAME, HAS_THUMBNAIL
+      FROM AUCTION_IMAGE_T
+     WHERE AUCTION_IMAGE_NO = #{auctionImageNo}
+  </select>
+  
+  <select id="getAuctionImage" parameterType="int" resultType="AuctionImageDto">
+    SELECT AUCTION_IMAGE_NO, AUCTION_NO, PATH, FILESYSTEM_NAME, IMAGE_ORIGINAL_NAME, HAS_THUMBNAIL
+      FROM AUCTION_IMAGE_T
+     WHERE AUCTION_NO = #{auctionNo}
+       AND AUCTION_IMAGE_NO = (SELECT MIN(AUCTION_IMAGE_NO) FROM AUCTION_IMAGE_T WHERE AUCTION_NO = #{auctionNo})
+  </select>
+  
+  <delete id="deleteImage" parameterType="int">
+    DELETE
+      FROM AUCTION_IMAGE_T
+     WHERE AUCTION_IMAGE_NO = #{auctionImageNo}
+  </delete>
+  
+  <update id="updateAuction" parameterType="Map">
+    UPDATE AUCTION_T
+       SET START_PRICE = #{startPrice}
+         , BUY_PRICE = #{buyPrice}
+         , END_AT = TO_DATE(#{endAt},'YYYY-MM-DD HH24:MI:SS')
+     WHERE AUCTION_NO = #{auctionNo}
+  </update>
+    
+  <update id="updateArt" parameterType="Map">
+    UPDATE ART_T
+       SET CATEGORY_NO = #{categoryNo}
+         , TITLE = #{title}
+         , ART_TYPE = #{artType}
+         , WIDTH = #{width}
+         , HEIGHT = #{height}
+         , CONTENTS = #{contents}
+     WHERE ART_NO = #{artNo}
+  </update>
+  
+  <delete id="deleteAuction" parameterType="int">
+      DELETE
+        FROM AUCTION_T
+       WHERE AUCTION_NO = #{auctionNo}
+  </delete>
+  
+  <insert id="insertImage" parameterType="AuctionImageDto">
+    INSERT INTO AUCTION_IMAGE_T (
+        AUCTION_IMAGE_NO
+      , AUCTION_NO
+      , PATH
+      , FILESYSTEM_NAME
+      , IMAGE_ORIGINAL_NAME
+      , HAS_THUMBNAIL
+    ) VALUES (
+        AUCTION_IMAGE_SEQ.NEXTVAL
+      , #{auctionNo}
+      , #{path}
+      , #{filesystemName}
+      , #{imageOriginalName}
+      , #{hasThumbnail}
+    )  
+  </insert>
+  
+  <select id="getEmoney" parameterType="int" resultType="int">
+    SELECT SUM(EMONEY_HISTORY)
+      FROM EMONEY_T
+     WHERE USER_NO = #{userNo}
+  </select>
+  
+  <insert id="insertBuyerEmoney" parameterType="Map">
+    INSERT INTO EMONEY_T (
+           EMONEY_NO
+         , USER_NO
+         , EMONEY_HISTORY
+         , EMONEY_DATE
+         ) VALUES (
+           EMONEY_SEQ.NEXTVAL
+         , #{buyerNo}
+         , -#{price}
+         , SYSDATE
+         )
+  </insert>
+  
+  <insert id="insertSellerEmoney" parameterType="Map">
+    INSERT INTO EMONEY_T (
+           EMONEY_NO
+         , USER_NO
+         , EMONEY_HISTORY
+         , EMONEY_DATE
+         ) VALUES (
+           EMONEY_SEQ.NEXTVAL
+         , #{userNo}
+         , #{price}
+         , SYSDATE
+         )
+  </insert>
+
+  <insert id="insertRealBid" parameterType="Map">
+    INSERT INTO BID_T (
+        BID_NO
+      , AUCTION_NO
+      , BIDDER_NO
+      , PRICE
+      , BID_AT
+      , POSTCODE
+      , ROAD_ADDRESS
+      , JIBUN_ADDRESS
+      , DETAIL_ADDRESS
+      , AUCTION_REQUEST
+    ) VALUES (
+        BID_SEQ.NEXTVAL
+      , #{auctionNo}
+      , #{buyerNo}
+      , #{price}
+      , SYSDATE
+      , #{postcode}
+      , #{roadAddress}
+      , #{jibunAddress}
+      , #{detailAddress}
+      , #{auctionRequest}
+    )
+  </insert>
+
+  <insert id="insertDigitalBid" parameterType="Map">
+    INSERT INTO BID_T (
+        BID_NO
+      , AUCTION_NO
+      , BIDDER_NO
+      , PRICE
+      , BID_AT
+      , RECEIVE_EMAIL
+      , AUCTION_REQUEST
+    ) VALUES (
+        BID_SEQ.NEXTVAL
+      , #{auctionNo}
+      , #{buyerNo}
+      , #{price}
+      , SYSDATE
+      , #{receiveEmail}
+      , #{auctionRequest}
+    )
+  </insert>
+  
+  <update id="updateStatus" parameterType="int">
+    UPDATE AUCTION_T
+       SET STATUS = 1
+     WHERE AUCTION_NO = #{auctionNo}
+  </update>
+  
+  <select id="getBidPrice" parameterType="int" resultType="int">
+   SELECT NVL(MAX(PRICE), 0) AS BIDPRICE
+     FROM BID_T 
+    WHERE AUCTION_NO = #{auctionNo}
+  </select>
+  
+  <insert id="insertBid" parameterType="BidDto">
+  INSERT INTO BID_T (
+        BID_NO
+      , AUCTION_NO
+      , BIDDER_NO
+      , PRICE
+      , BID_AT
+    ) VALUES (
+        BID_SEQ.NEXTVAL
+      , #{auctionNo}
+      , #{bidderNo}
+      , #{price}
+      , SYSDATE
+    )  
+  </insert>
+  
+    <insert id="insertBid2" parameterType="Map">
+  INSERT INTO BID_T (
+        BID_NO
+      , AUCTION_NO
+      , BIDDER_NO
+      , PRICE
+      , BID_AT
+    ) VALUES (
+        BID_SEQ.NEXTVAL
+      , #{auctionNo}
+      , #{bidderNo}
+      , #{price}
+      , SYSDATE
+    )  
+  </insert>
+  
+  
+  
+</mapper>
